@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order custom research — SourceVerdict</title>
+  <meta name="description" content="Order research on your product: a $99 Custom Screen or a $249 Full Decision Report. Tell us the product, country, channel and the decision you need to make. No payment on this form; we confirm scope and send a secure payment link." />
+  <link rel="canonical" href="https://sourceverdict.com/submit.html" />
+  <meta name="theme-color" content="#FFF9F1" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0c0f16" media="(prefers-color-scheme: dark)" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="SourceVerdict" />
+  <meta property="og:title" content="Order custom research — SourceVerdict" />
+  <meta property="og:description" content="A $99 Custom Screen or a $249 Full Decision Report on your product." />
+  <meta property="og:url" content="https://sourceverdict.com/submit.html" />
+  <meta property="og:image" content="https://sourceverdict.com/assets/img/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="assets/img/logo-square.png" sizes="any" />
+  <link rel="apple-touch-icon" href="assets/img/logo-square.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav" aria-label="Primary">
+        <a class="brand" href="index.html"><span class="brand__mark" aria-hidden="true"></span>SourceVerdict</a>
+        <div class="nav__links" id="navmenu">
+          <a href="how-it-works.html">How it works</a>
+          <a href="reports.html">Reports</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="faq.html">FAQ</a>
+          <a class="btn btn--primary nav__cta-mobile" href="submit.html" aria-current="page">Order research</a>
+        </div>
+        <div class="nav__right">
+          <a class="btn btn--primary" href="submit.html" aria-current="page">Order research</a>
+          <button class="nav__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navmenu"><span aria-hidden="true"></span></button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <p class="breadcrumb"><a href="index.html">Home</a> · Order custom research</p>
+        <span class="eyebrow">Custom research</span>
+        <h1 class="h1 mt-1">Order research on your product.</h1>
+        <p class="lead measure">Tell us what you're weighing up. Pick a Custom Screen or a Full Decision Report, and we'll investigate the exact product, country and channel you name.</p>
+      </div>
+    </section>
+
+    <section class="section section--paper" style="padding-top:clamp(20px,3vw,32px)">
+      <div class="container">
+        <div class="form-shell">
+          <form id="order-form" class="form" novalidate enctype="multipart/form-data" method="post" action="#">
+            <div class="form-status" aria-live="polite"></div>
+            <div class="note" id="order-context" style="display:none;margin-bottom:20px"></div>
+
+            <fieldset class="field" data-required-group style="border:0;padding:0;margin:0 0 4px">
+              <legend class="eyebrow eyebrow--blue" style="margin-bottom:14px">Choose your research <span class="req" aria-hidden="true">*</span></legend>
+              <div class="radio-cards">
+                <label class="radio-card" data-tier="screen">
+                  <input type="radio" name="tier" value="screen" />
+                  <div class="rc-name">Custom Screen</div>
+                  <div class="rc-price">$99</div>
+                  <div class="rc-note">Demand, competition, initial economics, risks &amp; next test</div>
+                </label>
+                <label class="radio-card" data-tier="full">
+                  <input type="radio" name="tier" value="full" />
+                  <div class="rc-name">Full Decision Report</div>
+                  <div class="rc-price">$249</div>
+                  <div class="rc-note">Deeper evidence, suppliers, economics model, improvements &amp; kit</div>
+                </label>
+              </div>
+              <p class="field-error" style="display:none">Please choose which research you'd like.</p>
+            </fieldset>
+
+            <hr class="hr" style="margin-block:28px" />
+
+            <div class="two-col">
+              <div class="field"><label for="name">Your name <span class="req" aria-hidden="true">*</span></label><input class="input" id="name" name="name" type="text" autocomplete="name" data-required><p class="field-error">Please enter your name.</p></div>
+              <div class="field"><label for="email">Email <span class="req" aria-hidden="true">*</span></label><input class="input" id="email" name="email" type="email" autocomplete="email" data-required><p class="field-error">Please enter a valid email.</p></div>
+            </div>
+
+            <div class="field">
+              <label for="product">Product link or description <span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="product" name="product" type="text" placeholder="Paste an Amazon/supplier link, or describe the product" data-required>
+              <p class="field-error">Please add a link or a short description.</p>
+            </div>
+
+            <div class="field">
+              <label for="product-image">Product image <span class="opt">(optional)</span></label>
+              <div class="file-drop" tabindex="0" role="button" aria-label="Upload a product image">
+                <input type="file" id="product-image" name="product_image" accept="image/*" />
+                <div><strong>Drop an image here</strong> or click to browse</div>
+                <div class="help">PNG or JPG, up to 10&nbsp;MB.</div>
+                <div class="file-name" aria-live="polite"></div>
+              </div>
+            </div>
+
+            <div class="two-col">
+              <div class="field"><label for="country">Target country <span class="req" aria-hidden="true">*</span></label>
+                <select class="select" id="country" name="country" data-required><option value="">Select a market…</option><option value="US">United States</option><option value="Canada">Canada</option><option value="Both">Both (US + Canada)</option></select>
+                <p class="field-error">Please choose a target market.</p></div>
+              <div class="field"><label for="channel">Channel <span class="req" aria-hidden="true">*</span></label>
+                <select class="select" id="channel" name="channel" data-required><option value="">Select a channel…</option><option>Amazon</option><option>Etsy</option><option>Shopify / own store</option><option>Retail / wholesale</option><option>Other / not sure</option></select>
+                <p class="field-error">Please choose a channel.</p></div>
+            </div>
+
+            <div class="two-col">
+              <div class="field"><label for="customer">Target customer / use <span class="opt">(optional)</span></label><input class="input" id="customer" name="customer" type="text" placeholder="Who's it for, and what problem does it solve?"></div>
+              <div class="field"><label for="budget">Approx. budget / quantity <span class="opt">(optional)</span></label><input class="input" id="budget" name="budget" type="text" placeholder="e.g. $3k, ~300 units"></div>
+            </div>
+
+            <div class="field">
+              <label for="decision">The decision you need to make <span class="req" aria-hidden="true">*</span></label>
+              <textarea class="textarea" id="decision" name="decision" placeholder="e.g. Should I order 300 units, or is the design too common to compete?" data-required></textarea>
+              <p class="field-error">Please tell us the decision you're trying to make.</p>
+            </div>
+
+            <div class="consent">
+              <input type="checkbox" id="consent" name="marketing_consent" value="yes" />
+              <label for="consent">Send me occasional SourceVerdict updates. (Optional — separate from your order; we'll email you about this request either way.)</label>
+            </div>
+
+            <!-- honeypot -->
+            <div aria-hidden="true" style="position:absolute;left:-9999px" tabindex="-1"><label>Leave empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off"></label></div>
+
+            <button class="btn btn--primary btn--lg btn--block mt-2" type="submit">Order research</button>
+            <p class="help center" style="margin-top:14px">No payment is taken here. We confirm the scope and send a secure payment link before any work begins.</p>
+          </form>
+
+          <aside class="form-aside">
+            <div class="aside-card">
+              <span class="eyebrow eyebrow--blue" style="margin-bottom:6px">What happens next</span>
+              <h3 class="mt-1">Three simple steps</h3>
+              <ul>
+                <li><span class="tick" aria-hidden="true">1</span><span>We review your request and confirm the scope.</span></li>
+                <li><span class="tick" aria-hidden="true">2</span><span>We send a secure payment link for your tier.</span></li>
+                <li><span class="tick" aria-hidden="true">3</span><span>You get your report with a clear GO / PASS.</span></li>
+              </ul>
+            </div>
+            <div class="aside-card">
+              <h3>Good to know</h3>
+              <ul>
+                <li><span class="tick" aria-hidden="true">✓</span><span>No passwords or card details on this form.</span></li>
+                <li><span class="tick" aria-hidden="true">✓</span><span>A supported PASS is a valid, useful outcome.</span></li>
+                <li><span class="tick" aria-hidden="true">✓</span><span>A GO for a sample or pilot is not a GO for inventory.</span></li>
+              </ul>
+            </div>
+            <div class="note">Need outreach, quotes or samples? That's <a href="supplier-validation.html">Supplier Validation</a> (from $750).</div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html"><span class="brand__mark" aria-hidden="true"></span>SourceVerdict</a>
+          <p class="footer-tag">Investigate before you invest.</p>
+          <p class="footer-disclaimer" style="margin-top:12px">Product intelligence for people who sell physical products. We investigate the opportunity before you commit inventory.</p>
+        </div>
+        <nav class="footer-col" aria-label="Research">
+          <h4>Research</h4>
+          <a href="reports.html">Reports catalog</a>
+          <a href="sample-report.html">Free sample report</a>
+          <a href="submit.html">Order custom research</a>
+          <a href="supplier-validation.html">Supplier validation</a>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <h4>Company</h4>
+          <a href="how-it-works.html">How it works</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="faq.html">FAQ</a>
+        </nav>
+        <nav class="footer-col" aria-label="Get started">
+          <h4>Get started</h4>
+          <a href="pricing.html">See offers</a>
+          <a href="reports.html">Browse reports</a>
+          <a href="mailto:hello@sourceverdict.com">Contact</a>
+        </nav>
+      </div>
+      <p class="footer-disclaimer">SourceVerdict provides independent product research and decision support. A GO or PASS verdict is an editorial opinion based on the evidence available at the time of research — not a guarantee of sales, profit, supplier performance, or regulatory compliance. A GO for a sample or pilot is not a GO for committing inventory. Reports may include estimates and clearly labelled assumptions. Prices are in USD before applicable taxes.</p>
+      <div class="footer-bottom">
+        <span>© <span id="year">2026</span> SourceVerdict. All rights reserved.</span>
+        <span class="dashes" aria-hidden="true"><i></i><i></i><i></i><i class="on"></i><i></i><i></i></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/reports.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
