@@ -9,8 +9,8 @@
 window.SV_CONFIG = {
   site: {
     name: "SourceVerdict",
-    origin: "https://sourceverdict.com", // TODO: set live domain
-    contactEmail: "hello@sourceverdict.com", // TODO: real inbox (never the owner's personal address publicly)
+    origin: "https://www.sourceverdict.net", // TODO: set live domain
+    contactEmail: "hello@sourceverdict.net", // TODO: real inbox (never the owner's personal address publicly)
     currency: "USD"
   },
 
@@ -89,7 +89,7 @@ window.SV_CONFIG = {
   forms: {
     customEndpoint: "",           // custom research intake (screen / full)
     supplierEndpoint: "",         // supplier validation inquiry
-    fallbackEmail: "hello@sourceverdict.com",
+    fallbackEmail: "hello@sourceverdict.net",
     maxUploadMB: 10
   },
 

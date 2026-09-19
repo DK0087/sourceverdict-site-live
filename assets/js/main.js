@@ -254,7 +254,7 @@
       var doneMsg = opts.successMsg(form, payLink);
 
       if (!endpoint) {
-        var to = CFG.forms.fallbackEmail || "hello@sourceverdict.com";
+        var to = CFG.forms.fallbackEmail || "hello@sourceverdict.net";
         var body = opts.summary(form);
         window.location.href = "mailto:" + to + "?subject=" + encodeURIComponent(opts.subject(form)) + "&body=" + encodeURIComponent(body);
         status("ok", doneMsg + " <span class='muted'>(Opening your email app — a form endpoint sends this automatically once configured.)</span>");

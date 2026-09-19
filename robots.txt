@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sourceverdict.com/sitemap.xml
+Sitemap: https://www.sourceverdict.net/sitemap.xml
