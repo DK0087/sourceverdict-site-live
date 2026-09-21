@@ -2,105 +2,85 @@
    SourceVerdict — site configuration (single source of truth)
    Edit these values; no build step required.
    Prices are USD, before applicable taxes.
-   Nothing here charges a card. Live purchase requires a real Stripe
-   Payment Link in `stripe.paymentLinks` AND a delivery method; until
-   both exist for an item it stays inquiry-only (see main.js availability).
+   Nothing here charges a card. Custom services use an inquiry →
+   scope-confirm → secure payment-link flow (see main.js).
    ===================================================================== */
 window.SV_CONFIG = {
   site: {
     name: "SourceVerdict",
-    origin: "https://www.sourceverdict.net", // TODO: set live domain
+    origin: "https://www.sourceverdict.net",
     contactEmail: "hello@sourceverdict.net", // TODO: real inbox (never the owner's personal address publicly)
     currency: "USD"
   },
 
   /* ---------------------------------------------------------------
-     THE FIVE OFFERS (do not add a sixth, memberships or subscriptions)
-     `checkoutRef` maps into stripe.paymentLinks. Empty => not directly
-     buyable; the offer routes to its inquiry/order flow instead.
+     THE OFFERS — one free sample + three paid services.
+     Do NOT add memberships, subscriptions, or premade reports for sale.
+     `checkoutRef` maps into stripe.paymentLinks; empty => the offer
+     routes to its inquiry/order flow instead (no direct checkout).
+     IDs (sample/screen/full/supplier) are stable — used by query
+     params and historical records. Do not rename the IDs.
      --------------------------------------------------------------- */
   offers: {
     sample: {
       id: "sample", order: 1, kind: "sample",
       name: "Complete Sample Report", priceLabel: "Free", price: 0,
-      summary: "One complete, existing worked case — the whole thing, free to read.",
+      summary: "One complete, existing worked example — free to read, so you can see how we investigate a product.",
       cta: "View the sample", href: "sample-report.html", checkoutRef: ""
     },
-    caseReport: {
-      id: "case", order: 2, kind: "catalog",
-      name: "Existing Case Report", priceLabel: "$29", price: 29,
-      packs: { three: 69, five: 99 },
-      summary: "Buy an already-researched report. Stated country, channel, research date and included files.",
-      cta: "Browse reports", href: "reports.html", checkoutRef: "" // per-report links live on each report record
-    },
     screen: {
-      id: "screen", order: 3, kind: "custom",
-      name: "Custom Screen", priceLabel: "$99", price: 99,
-      summary: "One product, one country, one channel. Public-source demand & competition, initial scenario economics, major risks, evidence gaps and the next test to run.",
-      cta: "Order a custom screen", href: "submit.html?tier=screen", checkoutRef: "screen"
+      id: "screen", order: 2, kind: "custom",
+      name: "Custom Product Screen", priceLabel: "$99", price: 99,
+      summary: "A focused first assessment of one product, one target country and one primary channel: initial competition, demand and pricing, preliminary cost and selling-price scenarios, as-sourced potential and optional improvement ideas, key supplier questions, risks, the next test, and a brief funding-fit overview.",
+      cta: "Submit your product", href: "submit.html?tier=screen", checkoutRef: "screen"
     },
     full: {
-      id: "full", order: 4, kind: "custom", highlight: true,
-      name: "Full Decision Report", priceLabel: "$249", price: 249,
-      summary: "Deeper evidence, review themes, supplier screening, an economics model, product-improvement recommendations, a Design Change Request, a supplier-message kit and a next-test plan.",
-      cta: "Order a full decision report", href: "submit.html?tier=full", checkoutRef: "full"
+      id: "full", order: 3, kind: "custom", highlight: true,
+      name: "Full Product Launch Report", priceLabel: "$249", price: 249,
+      summary: "A personalized plan to source, position, price and test your product: visual-search matches and same-category competition, selling prices, estimated demand and review analysis, as-sourced vs optional custom routes with comparable economics, an optional design concept and supplier brief, a supplier screening and price/small-order negotiation kit, and a launch budget with financial consultation.",
+      cta: "Get my product investigated", href: "submit.html?tier=full", checkoutRef: "full"
     },
     supplier: {
-      id: "supplier", order: 5, kind: "inquiry",
-      name: "Supplier Validation", priceLabel: "From $750", price: 750,
-      summary: "Separately scoped outreach, comparable quotations, document collection and sample coordination. Samples, testing, inspection, freight and goods cost extra.",
-      cta: "Discuss supplier validation", href: "supplier-validation.html", checkoutRef: ""
+      id: "supplier", order: 4, kind: "inquiry",
+      name: "Supplier Validation & Negotiation Support", priceLabel: "From $750", price: 750,
+      summary: "Separately scoped supplier outreach, comparable quotations, price and pilot-order negotiations, customization discussions, document collection and sample coordination. Samples, testing, inspection, freight and goods cost extra.",
+      cta: "Discuss supplier support", href: "supplier-validation.html", checkoutRef: ""
     }
   },
 
   /* ---------------------------------------------------------------
-     PACKS — existing (ready) reports only. Buyer picks exactly N
-     DISTINCT available reports; the total is fixed below (never taken
-     from the browser). A pack cannot be charged without backend
-     enforcement of eligibility + total, so packs stay selection+quote
-     until `stripe.checkoutSessionEndpoint` (a trusted backend) is set.
-     --------------------------------------------------------------- */
-  packs: {
-    three: { count: 3, price: 69, label: "3-report pack" },
-    five:  { count: 5, price: 99, label: "5-report pack" }
-  },
-
-  /* ---------------------------------------------------------------
      STRIPE — real integration only. No fictional links, keys or IDs.
-     Add hosted Payment Link URLs here; a per-item link makes that item
-     buyable (Stripe owns the price, so the browser never sets it).
-     Packs need a trusted backend (Checkout Session) — not a Payment Link.
+     Add hosted Payment Link URLs keyed by checkoutRef (screen / full)
+     to enable pay-after-scope; Stripe owns the price, so the browser
+     never sets it. Report packs and case sales have been removed.
      --------------------------------------------------------------- */
   stripe: {
-    mode: "test",                 // "test" | "live" — keep separate
+    mode: "test", // "test" | "live" — keep separate
     paymentLinks: {
-      // screen: "https://buy.stripe.com/....",   // Custom Screen $99
-      // full:   "https://buy.stripe.com/....",   // Full Decision Report $249
-      // "SV-002": "https://buy.stripe.com/...."  // a finished case report by id
-    },
-    checkoutSessionEndpoint: ""   // trusted backend for pack totals; empty => packs are quote-only
+      // screen: "https://buy.stripe.com/....",   // Custom Product Screen $99
+      // full:   "https://buy.stripe.com/...."    // Full Product Launch Report $249
+    }
   },
 
   /* ---------------------------------------------------------------
      FORMS — real submission only. Paste an endpoint (Formspree/Getform/
-     your handler). Empty => honest mailto fallback so nothing is lost.
+     your handler). Empty => the form opens an honest email DRAFT (it is
+     NOT sent automatically and the image is NOT attached — see main.js).
      Report DELIVERY is a separate verified process, not the success URL.
      --------------------------------------------------------------- */
   forms: {
-    customEndpoint: "",           // custom research intake (screen / full)
-    supplierEndpoint: "",         // supplier validation inquiry
+    customEndpoint: "",   // custom research intake (screen / full)
+    supplierEndpoint: "", // supplier validation & negotiation inquiry
     fallbackEmail: "hello@sourceverdict.net",
     maxUploadMB: 10
   },
 
   /* ---------------------------------------------------------------
-     DELIVERY — how a paid report actually reaches the buyer. A report
-     is only buyable when it has a delivery method here or on its record.
+     DELIVERY — how a paid report actually reaches the buyer.
      "manual" = clearly-stated manual delivery for launch (allowed).
+     Do NOT unlock files on the success URL alone.
      --------------------------------------------------------------- */
-  delivery: {
-    method: "manual"              // "manual" | "" (none). Do NOT unlock files on the success URL alone.
-  },
+  delivery: { method: "manual" },
 
   /* ---------------------------------------------------------------
      ANALYTICS — placeholders only, no fake IDs. Loads only when set.
@@ -111,13 +91,12 @@ window.SV_CONFIG = {
      PARTNER RESOURCES — prepared, INACTIVE by default. Renders nothing
      customer-facing until `active:true` AND real approved items exist.
      Never claim acceptance into a program; never advertise free capital,
-     a guaranteed voucher, or customer financing. Faire goods are not
-     Amazon-resale inventory. No Stripe Connect/Capital in checkout.
+     a guaranteed voucher, universal Alibaba Pay Later, unverified
+     Canadian availability, or automatic Stripe Capital. Financial
+     consultation on the site is SourceVerdict's own advice, shown
+     independently of this module.
      Item schema: { status, provider, country, channel, benefit, cap,
        currency, expiry, disclosure, trackingUrl, lastReviewed }
      --------------------------------------------------------------- */
-  partner: {
-    active: false,
-    items: []
-  }
+  partner: { active: false, items: [] }
 };

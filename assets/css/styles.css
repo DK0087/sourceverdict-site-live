@@ -508,6 +508,9 @@ strong { font-weight: 700; }
 /* ---- Three research-offer cards (Full is highlighted, not "popular") ---- */
 .offers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
 @media (max-width: 900px) { .offers { grid-template-columns: 1fr; max-width: 520px; margin-inline: auto; } }
+/* two-column variant for the two custom research services (no empty 3rd column) */
+.offers.offers--custom { grid-template-columns: repeat(2, 1fr); max-width: 840px; margin-inline: auto; }
+@media (max-width: 720px) { .offers.offers--custom { grid-template-columns: 1fr; max-width: 520px; } }
 .offer { position: relative; display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm); }
 .offer--highlight { border: 2px solid var(--blue); box-shadow: var(--shadow-md); }
 .offer__flag { position: absolute; top: -13px; left: 28px; background: var(--blue); color: #fff; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }

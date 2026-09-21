@@ -1,15 +1,11 @@
 /* =====================================================================
-   SourceVerdict — report catalog (data-driven records)
-   Production target: 1 complete sample + 10 paid titles.
-   RULES enforced by the UI (see main.js `reportBuyable`):
-     - A queue entry is NOT an available product.
-     - A purchase button appears ONLY when status==="available" AND a
-       Stripe link exists (config.stripe.paymentLinks[checkoutRef]) AND
-       a delivery method exists (record.deliveryRef or config.delivery).
-     - Never invent previews, findings, prices or download assets.
-     - A GO for a sample/pilot is NOT a GO for inventory.
-     - Do not sell a document that is freely available.
-   status: "sample" | "available" | "coming-soon" | "unpublished"
+   SourceVerdict — sample & public cases (data-driven, editorial)
+   These are NOT products for sale. There is one free sample; public
+   cases demonstrate our method. Paid work is prepared for the product
+   a customer submits (see submit.html).
+   status: "sample" (the free sample) | "case" (published editorial case)
+           | "unpublished" (hidden). Never invent cases to fill a grid;
+           add a record only when real editorial content exists.
    ===================================================================== */
 window.SV_REPORTS = [
   {
@@ -17,38 +13,28 @@ window.SV_REPORTS = [
     caseNumber: "SV-001",
     title: "Printed wooden wristwatch",
     product: "A printed wooden wristwatch sourced from an overseas marketplace listing.",
-    decisionAssessed: "Order the catalog design unchanged, or negotiate a small custom pilot?",
+    decisionAssessed: "Sell the catalog design as sourced, or improve it before ordering?",
     country: "US + Canada",
     channel: "Amazon / DTC",
     researchDate: "2026-09-17",
     version: "1.0",
     status: "sample",
-    price: 0,
     verdict: "GO",
-    verdictNote: "GO for a small custom pilot — not a GO for committing inventory.",
+    verdictNote: "GO for a small custom pilot — not a GO for committing inventory. Shown as an example of our reasoning and its limits.",
     href: "sample-report.html",
-    freelyAvailable: true,          // the online sample is free to read
-    checkoutRef: "",                // free — no checkout
-    deliveryRef: "view",            // delivered by reading it on the page
     previews: [
       { img: "assets/img/verdict/03-market-snapshot.png", caption: "Market snapshot — the same image appears across Alibaba & AliExpress" },
       { img: "assets/img/verdict/04-what-customers-hate.png", caption: "Customer complaints from comparable products" },
-      { img: "assets/img/verdict/09-verdict.png", caption: "The verdict — GO for a small custom pilot" }
+      { img: "assets/img/verdict/09-verdict.png", caption: "A possible next step, with its limits stated" }
     ],
     included: [
-      "The product and the exact decision being assessed",
+      "The product and the decision being assessed",
       "Market snapshot and competitor context",
       "Customer-complaint themes from comparable products",
       "Commercial reality — costs before profit",
-      "A Make It Sellable redesign concept",
-      "A clear GO / PASS with reasoning"
+      "An optional improvement concept",
+      "A reasoned next step, with limits"
     ],
-    limits: "Public-source evidence, dated to the research date. Complaint examples are individual reports about comparable products, not measured defect rates. Supplier currency and full landed cost were unconfirmed. A GO for a pilot is not a GO for inventory."
-  },
-
-  /* --- Queue: clearly-marked coming soon. No previews/prices/downloads
-         are invented. Replace with real finished records to publish. --- */
-  { id: "queue-1", caseNumber: "—", title: "Case report in research", product: "Announced on publish.", country: "TBA", channel: "TBA", researchDate: null, version: null, status: "coming-soon", price: null, verdict: null, previews: [], included: [], limits: "", checkoutRef: "", deliveryRef: "" },
-  { id: "queue-2", caseNumber: "—", title: "Case report in research", product: "Announced on publish.", country: "TBA", channel: "TBA", researchDate: null, version: null, status: "coming-soon", price: null, verdict: null, previews: [], included: [], limits: "", checkoutRef: "", deliveryRef: "" },
-  { id: "queue-3", caseNumber: "—", title: "Case report in research", product: "Announced on publish.", country: "TBA", channel: "TBA", researchDate: null, version: null, status: "coming-soon", price: null, verdict: null, previews: [], included: [], limits: "", checkoutRef: "", deliveryRef: "" }
+    limits: "An earlier worked example on public-source evidence, dated to the research date. Complaint examples are individual reports about comparable products, not measured defect rates. New full reports also include a structured comparison of launch options and financial consultation."
+  }
 ];

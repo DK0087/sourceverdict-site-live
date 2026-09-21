@@ -1,7 +1,8 @@
 /* =====================================================================
    SourceVerdict — behaviour
    Vanilla JS, progressive enhancement. Nothing here charges a card.
-   Purchase appears only when a real Stripe link + delivery exist.
+   Custom services use an inquiry → scope-confirm → secure payment-link
+   flow. Public cases are editorial, not products for sale.
    ===================================================================== */
 (function () {
   "use strict";
@@ -11,6 +12,7 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var money = function (n) { return "$" + Number(n).toLocaleString("en-US"); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); };
 
   /* ---------- Analytics (loads only if IDs configured) ---------- */
   var A = CFG.analytics || {};
@@ -58,7 +60,7 @@
     } else { reveals.forEach(function (el) { el.classList.add("in"); }); }
   }
 
-  /* ---------- Verdict gallery ---------- */
+  /* ---------- Verdict / example gallery ---------- */
   (function () {
     var track = $(".gallery__track"); if (!track) return;
     var step = function () { var f = track.querySelector("figure"); return f ? f.getBoundingClientRect().width + 16 : 300; };
@@ -72,154 +74,95 @@
   $$("[data-full-report]").forEach(function (a) { a.addEventListener("click", function () { window.svTrack("full_report_clicked"); }); });
   $$("[data-order]").forEach(function (a) { a.addEventListener("click", function () { window.svTrack("order_cta_clicked", { offer: a.getAttribute("data-order") }); }); });
 
-  /* =====================================================================
-     AVAILABILITY  — a report is buyable only with a real Stripe link +
-     a delivery method, and never if it is freely available.
-     ===================================================================== */
+  /* ---------- Payment link lookup (custom services only) ---------- */
   function stripeLink(ref) { return (ref && CFG.stripe && CFG.stripe.paymentLinks && CFG.stripe.paymentLinks[ref]) || ""; }
-  function hasDelivery(r) { return !!(r.deliveryRef || (CFG.delivery && CFG.delivery.method)); }
-  function reportBuyable(r) { return r.status === "available" && r.price > 0 && !!stripeLink(r.checkoutRef || r.id) && hasDelivery(r) && !r.freelyAvailable; }
-  function availableReports() { return REPORTS.filter(reportBuyable); }
-  window.SV = { reportBuyable: reportBuyable, availableReports: availableReports, stripeLink: stripeLink };
 
-  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); };
-
-  /* ---------- Catalog (reports.html) ---------- */
+  /* =====================================================================
+     SAMPLE & CASES  — free sample + editorial public cases (not for sale)
+     ===================================================================== */
   function catalogCard(r) {
+    if (r.status === "unpublished") return "";
     var meta = [r.caseNumber && r.caseNumber !== "—" ? r.caseNumber : "", r.country, r.channel, r.researchDate].filter(Boolean)
       .map(function (m) { return "<span>" + esc(m) + "</span>"; }).join("");
-    if (r.status === "sample") {
-      var thumb = r.previews[0] ? r.previews[0].img : "assets/img/watch-hero.png";
-      return '<article class="report-card">' +
-        '<a class="report-card__thumb" href="' + esc(r.href || ("report.html?id=" + r.id)) + '"><span class="badge badge--sample">Free sample</span><img src="' + esc(thumb) + '" alt="' + esc(r.title) + ' preview" loading="lazy"></a>' +
-        '<div class="report-card__body"><div class="report-card__title">' + esc(r.title) + '</div>' +
-        '<div class="report-card__meta">' + meta + '</div>' +
-        '<a class="btn btn--blue" href="' + esc(r.href || ("report.html?id=" + r.id)) + '" data-full-report>View the sample</a></div></article>';
-    }
-    if (reportBuyable(r)) {
-      var link = stripeLink(r.checkoutRef || r.id);
-      return '<article class="report-card">' +
-        '<a class="report-card__thumb" href="report.html?id=' + esc(r.id) + '"><span class="badge badge--available">Available</span>' + (r.verdict ? '<span class="badge badge--' + esc(r.verdict.toLowerCase()) + '" style="left:auto;right:12px">' + esc(r.verdict) + '</span>' : "") + '<img src="' + esc(r.previews[0] ? r.previews[0].img : "assets/img/og-image.png") + '" alt="' + esc(r.title) + ' preview" loading="lazy"></a>' +
-        '<div class="report-card__body"><div class="report-card__title">' + esc(r.title) + '</div><div class="report-card__meta">' + meta + '</div>' +
-        '<a class="btn btn--outline" href="report.html?id=' + esc(r.id) + '">Details</a>' +
-        '<a class="btn btn--primary" href="' + esc(link) + '" data-buy="' + esc(r.id) + '">Buy this report — ' + money(r.price) + '</a></div></article>';
-    }
-    if (r.status === "coming-soon") {
-      return '<article class="report-card report-card--soon"><div class="report-card__thumb">Coming soon</div>' +
-        '<div class="report-card__body"><div class="report-card__title">' + esc(r.title) + '</div>' +
-        '<div class="report-card__meta"><span>In research</span></div>' +
-        '<p class="muted" style="font-size:.9rem;margin-top:6px">' + esc(r.product) + '</p></div></article>';
-    }
-    return ""; // unpublished
+    var href = r.href || ("report.html?id=" + r.id);
+    var isSample = r.status === "sample";
+    var thumb = (r.previews && r.previews[0]) ? r.previews[0].img : "assets/img/watch-hero.png";
+    var badge = isSample ? '<span class="badge badge--sample">Free sample</span>' : '<span class="badge badge--soon">Case study</span>';
+    var cta = isSample
+      ? '<a class="btn btn--blue" href="' + esc(href) + '" data-full-report>View the sample</a>'
+      : '<a class="btn btn--outline" href="' + esc(href) + '">Read the case</a>';
+    return '<article class="report-card">' +
+      '<a class="report-card__thumb" href="' + esc(href) + '">' + badge + '<img src="' + esc(thumb) + '" alt="' + esc(r.title) + ' preview" loading="lazy"></a>' +
+      '<div class="report-card__body"><div class="report-card__title">' + esc(r.title) + '</div>' +
+      '<div class="report-card__meta">' + meta + '</div>' + cta + '</div></article>';
   }
   function renderCatalog() {
     var grid = $("#catalog-grid"); if (!grid) return;
-    grid.innerHTML = REPORTS.map(catalogCard).join("");
-    var avail = availableReports().length;
-    var count = $("#catalog-count"); if (count) count.textContent = avail === 0 ? "1 free sample available · paid case reports in research" : (avail + " report" + (avail === 1 ? "" : "s") + " available");
-    renderPack();
-    $$('[data-buy]', grid).forEach(function (b) { b.addEventListener("click", function () { window.svTrack("buy_report_clicked", { id: b.getAttribute("data-buy") }); }); });
+    var list = REPORTS.filter(function (r) { return r.status !== "unpublished"; });
+    grid.innerHTML = list.map(catalogCard).join("");
+    var count = $("#catalog-count");
+    if (count) {
+      var cases = list.filter(function (r) { return r.status !== "sample"; }).length;
+      count.textContent = cases ? ("Free sample + " + cases + " public case stud" + (cases === 1 ? "y" : "ies")) : "Free sample available";
+    }
   }
 
-  /* ---------- Report detail (report.html?id=) ---------- */
+  /* ---------- Case / sample detail (report.html?id=) ---------- */
   function renderReportDetail() {
     var root = $("#report-detail"); if (!root) return;
     var id = new URLSearchParams(location.search).get("id");
     var r = REPORTS.find(function (x) { return x.id === id; });
-    document.title = (r ? r.title : "Report") + " — SourceVerdict";
+    document.title = (r ? r.title : "Case study") + " — SourceVerdict";
+    var customBlock = '<div class="mt-3 callout"><h2 class="h3">Have a product in mind?</h2><p class="muted mt-1">Submit your product photo and purchase link — we’ll investigate the exact product you want to sell.</p><div class="btn-row mt-2"><a class="btn btn--primary" href="submit.html">Submit your product</a><a class="btn btn--outline" href="sample-report.html" data-full-report>View the free sample</a></div></div>';
     if (!r) {
-      root.innerHTML = '<div class="soon-panel"><h1 class="h2">Report not found</h1><p class="muted mt-1">That report isn’t published. Browse the catalog or order research on your own product.</p><div class="btn-row mt-2" style="justify-content:center"><a class="btn btn--blue" href="reports.html">Browse reports</a><a class="btn btn--outline" href="submit.html">Order custom research</a></div></div>';
+      root.innerHTML = '<div class="soon-panel"><h1 class="h2">Case not found</h1><p class="muted mt-1">That page isn’t published. Start with our free sample, or submit your own product for a personalized investigation.</p><div class="btn-row mt-2" style="justify-content:center"><a class="btn btn--blue" href="sample-report.html" data-full-report>View the free sample</a><a class="btn btn--outline" href="submit.html">Submit your product</a></div></div>';
+      window.svTrack("case_not_found", { id: id || "" });
       return;
     }
-    if (r.status === "sample" && r.href && r.href !== location.pathname.split("/").pop()) {
-      // sample has a dedicated rich page
-    }
-    var facts = [["Case", r.caseNumber], ["Country", r.country], ["Channel", r.channel], ["Research date", r.researchDate || "—"], ["Version", r.version || "—"], ["Status", r.status]]
+    var facts = [["Case", r.caseNumber], ["Country", r.country], ["Channel", r.channel], ["Research date", r.researchDate || ""], ["Version", r.version || ""]]
+      .filter(function (f) { return f[1] && f[1] !== "—"; })
       .map(function (f) { return '<li><div class="k">' + esc(f[0]) + '</div><div class="v">' + esc(f[1]) + "</div></li>"; }).join("");
     var previews = (r.previews && r.previews.length)
       ? '<div class="preview-panels">' + r.previews.map(function (p) { return '<figure><img src="' + esc(p.img) + '" alt="' + esc(p.caption) + '" loading="lazy"><figcaption>' + esc(p.caption) + "</figcaption></figure>"; }).join("") + "</div>"
-      : '<p class="note">Preview panels are published with the finished report.</p>';
+      : "";
     var included = (r.included && r.included.length) ? '<ul class="deliverables">' + r.included.map(function (i) { return '<li><span class="tick" aria-hidden="true">✓</span><span>' + esc(i) + "</span></li>"; }).join("") + "</ul>" : "";
-    var buyable = reportBuyable(r);
-    var action;
-    if (r.status === "sample") action = '<a class="btn btn--blue btn--lg" href="' + esc(r.href) + '" data-full-report>View the sample</a>';
-    else if (buyable) action = '<a class="btn btn--primary btn--lg" href="' + esc(stripeLink(r.checkoutRef || r.id)) + '" data-buy="' + esc(r.id) + '">Buy this report — ' + money(r.price) + '</a>';
-    else action = '<div class="avail-note">This report isn’t on sale yet. Want this exact decision now? Order custom research below.</div>';
+    var action = r.status === "sample"
+      ? '<a class="btn btn--blue btn--lg" href="' + esc(r.href || "sample-report.html") + '" data-full-report>View the full sample</a>'
+      : '<a class="btn btn--primary btn--lg" href="submit.html">Submit your product</a>';
     var verdictBlock = r.verdict ? '<p class="note"><strong>' + esc(r.verdict) + '</strong> — ' + esc(r.verdictNote || "") + "</p>" : "";
     root.innerHTML =
       '<div class="report-hero">' +
         '<div>' + previews + "</div>" +
-        '<div><span class="eyebrow">' + esc(r.caseNumber) + " · Case report</span>" +
+        '<div><span class="eyebrow">' + esc(r.status === "sample" ? "Free sample" : "Worked example") + (r.caseNumber && r.caseNumber !== "—" ? " · " + esc(r.caseNumber) : "") + "</span>" +
         '<h1 class="h1 mt-1">' + esc(r.title) + "</h1>" +
         '<p class="lead mt-1">' + esc(r.product) + "</p>" +
-        '<p class="mt-1"><strong>Decision assessed:</strong> ' + esc(r.decisionAssessed) + "</p>" +
-        '<ul class="report-facts">' + facts + "</ul>" +
+        (r.decisionAssessed ? '<p class="mt-1"><strong>Decision assessed:</strong> ' + esc(r.decisionAssessed) + "</p>" : "") +
+        (facts ? '<ul class="report-facts">' + facts + "</ul>" : "") +
         '<div class="mt-2">' + action + "</div>" + verdictBlock + "</div>" +
       "</div>" +
-      (included ? '<div class="mt-3"><h2 class="h3">What’s included</h2>' + included + "</div>" : "") +
+      (included ? '<div class="mt-3"><h2 class="h3">What this example covers</h2>' + included + "</div>" : "") +
       (r.limits ? '<div class="mt-2"><h2 class="h3">Evidence &amp; limits</h2><p class="note mt-1">' + esc(r.limits) + "</p></div>" : "") +
-      '<div class="mt-3 callout"><h2 class="h3">Have another product in mind?</h2><p class="muted mt-1">Order research on your own product — a Custom Screen or a Full Decision Report.</p><div class="btn-row mt-2"><a class="btn btn--blue" href="submit.html">Order custom research</a><a class="btn btn--outline" href="reports.html">Back to catalog</a></div></div>';
-    window.svTrack("report_view", { id: r.id, status: r.status });
+      customBlock;
+    window.svTrack("case_view", { id: r.id, status: r.status });
     observeReveals();
   }
 
-  /* ---------- Pack selector (reports.html #pack) ---------- */
-  function renderPack() {
-    var wrap = $("#pack"); if (!wrap) return;
-    var avail = availableReports();
-    if (avail.length < 3) {
-      wrap.innerHTML = '<div class="soon-panel"><span class="badge badge--soon">Packs</span><h3 class="h3 mt-1">Report packs unlock at 3+ reports</h3><p class="muted mt-1">Buy any 3 for ' + money(CFG.packs.three.price) + ' or 5 for ' + money(CFG.packs.five.price) + ' once more case reports are published. Need a specific product now?</p><div class="btn-row mt-2" style="justify-content:center"><a class="btn btn--blue" href="submit.html">Order custom research</a></div></div>';
-      return;
-    }
-    // Real selector (active once >=3 reports exist)
-    var picks = new Set(JSON.parse(sessionStorage.getItem("sv_pack") || "[]").filter(function (id) { return avail.some(function (r) { return r.id === id; }); }));
-    var packKey = sessionStorage.getItem("sv_pack_size") || "three";
-    function need() { return CFG.packs[packKey].count; }
-    function draw() {
-      wrap.innerHTML =
-        '<h3 class="h3">Build a pack</h3><p class="muted mt-1">Pick exactly ' + need() + ' distinct reports. Total is fixed by the pack — the price is never set in your browser.</p>' +
-        '<div class="pack__options" role="radiogroup" aria-label="Pack size">' +
-          '<label class="pack__option"><input type="radio" name="packsize" value="three"' + (packKey === "three" ? " checked" : "") + "> 3 for " + money(CFG.packs.three.price) + "</label>" +
-          '<label class="pack__option"><input type="radio" name="packsize" value="five"' + (packKey === "five" ? " checked" : "") + "> 5 for " + money(CFG.packs.five.price) + "</label>" +
-        "</div>" +
-        '<div class="pack__picks">' + avail.map(function (r) {
-          var on = picks.has(r.id);
-          return '<label class="pick"><input type="checkbox" value="' + esc(r.id) + '"' + (on ? " checked" : "") + '><span>' + esc(r.title) + ' <span class="muted">· ' + esc(r.country) + "</span></span><span class=\"muted\">" + money(r.price) + "</span></label>";
-        }).join("") + "</div>" +
-        '<div class="pack__total"><span class="muted" id="pack-status"></span><span class="amount">' + money(CFG.packs[packKey].price) + "</span></div>" +
-        '<button class="btn btn--primary btn--block mt-2" id="pack-continue" type="button">Continue with these ' + need() + "</button>" +
-        '<p class="avail-note">Your selection is saved with the order; we confirm eligibility and send a secure payment link for the exact pack total.</p>';
-      $$('input[name="packsize"]', wrap).forEach(function (i) { i.addEventListener("change", function () { packKey = i.value; sessionStorage.setItem("sv_pack_size", packKey); if (picks.size > need()) picks = new Set(Array.from(picks).slice(0, need())); persist(); draw(); }); });
-      $$('.pack__picks input', wrap).forEach(function (c) {
-        c.addEventListener("change", function () {
-          if (c.checked) { if (picks.size >= need()) { c.checked = false; status(); return; } picks.add(c.value); }
-          else picks.delete(c.value);
-          persist(); status();
-        });
-      });
-      $("#pack-continue", wrap).addEventListener("click", function () {
-        if (picks.size !== need()) { status(); return; }
-        window.svTrack("pack_selected", { size: packKey, ids: Array.from(picks) });
-        location.href = "submit.html?intent=pack&size=" + packKey + "&reports=" + encodeURIComponent(Array.from(picks).join(","));
-      });
-      status();
-    }
-    function persist() { sessionStorage.setItem("sv_pack", JSON.stringify(Array.from(picks))); }
-    function status() { var s = $("#pack-status", wrap); if (s) s.textContent = picks.size + " of " + need() + " selected"; var b = $("#pack-continue", wrap); if (b) b.disabled = picks.size !== need(); }
-    draw();
-  }
-
   /* =====================================================================
-     FORMS — real submission only; honest confirmation; delivery is a
-     separate verified process (never the success URL alone).
+     FORMS — real submission only. With no endpoint we open an honest
+     email DRAFT (not "received"); the image is not auto-attached.
      ===================================================================== */
   function genericLeadForm(form, opts) {
     var statusEl = $(".form-status", form) || $(".form-status");
+    var hasEndpoint = !!opts.endpoint();
     function setError(el, on) { var w = el.closest(".field") || el.parentNode; w.classList.toggle("invalid", !!on); }
     function valid(el) { return el.type === "email" ? /.+@.+\..+/.test(el.value.trim()) : el.value.trim() !== ""; }
     $$("[data-required]", form).forEach(function (el) { el.addEventListener("blur", function () { setError(el, !valid(el)); }); });
     var started = false;
     form.addEventListener("focusin", function () { if (!started) { started = true; window.svTrack(opts.eventPrefix + "_started"); } });
+
+    // Honest button label when there is no server endpoint
+    var submitBtn = $('[type="submit"]', form);
+    if (submitBtn && !hasEndpoint) { submitBtn.dataset.label = submitBtn.textContent; submitBtn.textContent = "Open email draft"; }
 
     // file UX
     var fileInput = $('input[type="file"]', form), drop = $(".file-drop", form), fileName = $(".file-name", form);
@@ -238,32 +181,32 @@
       fileName.style.color = ""; fileName.textContent = "Selected: " + f.name;
     }
 
-    function status(kind, msg) { statusEl.className = "form-status " + kind; statusEl.innerHTML = msg; }
+    function status(kind, msg) { statusEl.className = "form-status " + kind; statusEl.innerHTML = msg; statusEl.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" }); }
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var ok = true, firstBad = null;
       $$("[data-required]", form).forEach(function (el) { var v = valid(el); setError(el, !v); if (!v) { ok = false; firstBad = firstBad || el; } });
-      // radio groups marked required via [data-required-group]
       $$("[data-required-group]", form).forEach(function (g) { var has = g.querySelector("input:checked"); g.classList.toggle("invalid", !has); if (!has) { ok = false; firstBad = firstBad || g.querySelector("input"); } });
       if (!ok) { if (firstBad && firstBad.focus) firstBad.focus(); status("err", "Please complete the highlighted fields."); return; }
 
       var endpoint = opts.endpoint();
       var btn = $('[type="submit"]', form);
       var payLink = opts.payLink ? opts.payLink(form) : "";
-      var doneMsg = opts.successMsg(form, payLink);
 
+      // No server endpoint → open an HONEST email draft. Not delivery.
       if (!endpoint) {
         var to = CFG.forms.fallbackEmail || "hello@sourceverdict.net";
-        var body = opts.summary(form);
-        window.location.href = "mailto:" + to + "?subject=" + encodeURIComponent(opts.subject(form)) + "&body=" + encodeURIComponent(body);
-        status("ok", doneMsg + " <span class='muted'>(Opening your email app — a form endpoint sends this automatically once configured.)</span>");
-        window.svTrack(opts.eventPrefix + "_completed", { path: "mailto" });
+        window.location.href = "mailto:" + to + "?subject=" + encodeURIComponent(opts.subject(form)) + "&body=" + encodeURIComponent(opts.summary(form));
+        status("ok", "<strong>Your email draft is ready.</strong> Attach your product photo and send the email to submit your request. Nothing is uploaded or received until you send it.");
+        window.svTrack(opts.eventPrefix + "_draft", { path: "mailto" });
         return;
       }
+
+      // Real endpoint → only confirm after server acknowledgement.
       btn.disabled = true; var label = btn.textContent; btn.textContent = "Sending…";
       fetch(endpoint, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
-        .then(function (res) { if (!res.ok) throw new Error("bad"); form.reset(); if (fileName) fileName.textContent = ""; status("ok", doneMsg); window.svTrack(opts.eventPrefix + "_completed", { path: "endpoint" }); statusEl.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" }); })
+        .then(function (res) { if (!res.ok) throw new Error("bad"); form.reset(); if (fileName) fileName.textContent = ""; status("ok", opts.successMsg(form, payLink)); window.svTrack(opts.eventPrefix + "_completed", { path: "endpoint" }); })
         .catch(function () { status("err", "Something went wrong sending that. Please email <a href='mailto:" + (CFG.forms.fallbackEmail) + "'>" + (CFG.forms.fallbackEmail) + "</a> and we’ll take it from there."); })
         .finally(function () { btn.disabled = false; btn.textContent = label; });
     });
@@ -273,29 +216,22 @@
   function initOrderForm() {
     var form = $("#order-form"); if (!form) return;
     var params = new URLSearchParams(location.search);
-    // tier preselect
     var tier = params.get("tier");
     if (tier) { var t = form.querySelector('input[name="tier"][value="' + tier + '"]'); if (t) t.checked = true; }
-    // fill tier prices from config
     $$(".radio-card[data-tier]", form).forEach(function (card) {
-      var key = card.getAttribute("data-tier"), o = CFG.offers[key === "full" ? "full" : "screen"];
+      var key = card.getAttribute("data-tier"), o = CFG.offers[key];
       var pr = card.querySelector(".rc-price"); if (pr && o) pr.textContent = o.priceLabel;
     });
-    // pack intent (from catalog pack selector)
+    // Retired: old report-pack links. Explain rather than silently reinterpret.
     if (params.get("intent") === "pack") {
-      var size = params.get("size") === "five" ? "five" : "three";
-      var ids = (params.get("reports") || "").split(",").filter(Boolean);
       var banner = $("#order-context");
-      if (banner) {
-        banner.style.display = "block";
-        var titles = ids.map(function (id) { var r = REPORTS.find(function (x) { return x.id === id; }); return r ? r.title : id; });
-        banner.innerHTML = "<strong>" + CFG.packs[size].label + " — " + money(CFG.packs[size].price) + "</strong><br>Selected: " + esc(titles.join(", ") || "(choose on the reports page)") + '<input type="hidden" name="pack_size" value="' + esc(size) + '"><input type="hidden" name="pack_reports" value="' + esc(ids.join(",")) + '">';
-      }
+      if (banner) { banner.style.display = "block"; banner.innerHTML = "<strong>Report packs are no longer offered.</strong> Tell us the product you want to sell and we’ll investigate it as a custom request — choose a service below."; }
+      window.svTrack("legacy_pack_link");
     }
     genericLeadForm(form, {
       eventPrefix: "custom_order",
       endpoint: function () { return CFG.forms.customEndpoint; },
-      subject: function (f) { var t = (f.querySelector('input[name="tier"]:checked') || {}).value || "custom"; return "Custom research request — " + t; },
+      subject: function (f) { var t = (f.querySelector('input[name="tier"]:checked') || {}).value || "custom"; return "Product investigation request — " + t; },
       payLink: function (f) { var t = (f.querySelector('input[name="tier"]:checked') || {}).value; return stripeLink(t); },
       successMsg: function (f, pay) {
         var base = "Request received. We’ll confirm the scope and send a secure payment link before any work begins.";
@@ -304,23 +240,40 @@
       },
       summary: function (f) {
         var g = function (n) { var el = f.querySelector('[name="' + n + '"]'); return el ? el.value : ""; };
-        return ["Tier: " + ((f.querySelector('input[name="tier"]:checked') || {}).value || ""), "Name: " + g("name"), "Email: " + g("email"), "Product link/description: " + g("product"), "Target country: " + g("country"), "Channel: " + g("channel"), "Target customer / use: " + g("customer"), "Budget / quantity: " + g("budget"), "Decision needed: " + g("decision"), "Marketing consent: " + (f.querySelector('[name="marketing_consent"]') && f.querySelector('[name="marketing_consent"]').checked ? "yes" : "no")].join("\n");
+        var chk = function (n) { var el = f.querySelector('[name="' + n + '"]'); return el && el.checked ? "yes" : "no"; };
+        return [
+          "Service: " + ((f.querySelector('input[name="tier"]:checked') || {}).value || ""),
+          "Name: " + g("name"),
+          "Email: " + g("email"),
+          "Product description: " + g("product"),
+          "Purchase / supplier link: " + g("product_link"),
+          "Business based in: " + g("business_country"),
+          "Plan to sell in: " + g("sell_market"),
+          "Import destination (if different): " + g("import_destination"),
+          "Channel: " + g("channel"),
+          "Target customer / use: " + g("customer"),
+          "Approx. budget: " + g("budget") + " " + g("currency"),
+          "Starting quantity: " + g("quantity"),
+          "Preferred approach: " + g("approach"),
+          "Decision needed: " + g("decision"),
+          "Marketing consent: " + chk("marketing_consent")
+        ].join("\n");
       }
     });
   }
 
-  /* ---------- Supplier validation inquiry (supplier-validation.html) ---------- */
+  /* ---------- Supplier validation & negotiation inquiry ---------- */
   function initSupplierForm() {
     var form = $("#supplier-form"); if (!form) return;
     genericLeadForm(form, {
       eventPrefix: "supplier_inquiry",
       endpoint: function () { return CFG.forms.supplierEndpoint; },
-      subject: function () { return "Supplier validation inquiry"; },
-      successMsg: function () { return "Inquiry received. We’ll reply with a scope and quote (from " + money(CFG.offers.supplier.price) + "). Samples, testing, inspection, freight and goods are quoted separately."; },
+      subject: function () { return "Supplier validation & negotiation inquiry"; },
+      successMsg: function () { return "Inquiry received. We’ll reply with a written scope and quote (from " + money(CFG.offers.supplier.price) + "). Samples, testing, inspection, freight and goods are quoted separately."; },
       summary: function (f) {
         var g = function (n) { var el = f.querySelector('[name="' + n + '"]'); return el ? el.value : ""; };
         var needs = $$('input[name="needs"]:checked', f).map(function (i) { return i.value; }).join(", ");
-        return ["Name: " + g("name"), "Email: " + g("email"), "Company: " + g("company"), "Product: " + g("product"), "Target country: " + g("country"), "Channel: " + g("channel"), "Target quantity: " + g("quantity"), "Needs: " + needs, "Budget range: " + g("budget"), "Timeline: " + g("timeline"), "Notes: " + g("notes")].join("\n");
+        return ["Name: " + g("name"), "Email: " + g("email"), "Company: " + g("company"), "Product: " + g("product"), "Target market: " + g("country"), "Channel: " + g("channel"), "Target quantity: " + g("quantity"), "Needs: " + needs, "Budget range: " + g("budget"), "Timeline: " + g("timeline"), "Notes: " + g("notes")].join("\n");
       }
     });
   }
@@ -341,14 +294,15 @@
   function reportMissingConfig() {
     if (!window.console) return;
     var miss = [];
-    if (!CFG.forms.customEndpoint) miss.push("forms.customEndpoint → custom intake uses mailto fallback");
-    if (!CFG.forms.supplierEndpoint) miss.push("forms.supplierEndpoint → supplier inquiry uses mailto fallback");
-    if (!Object.keys((CFG.stripe && CFG.stripe.paymentLinks) || {}).length) miss.push("stripe.paymentLinks → no item is directly buyable");
-    if (!(CFG.stripe && CFG.stripe.checkoutSessionEndpoint)) miss.push("stripe.checkoutSessionEndpoint → report packs cannot be charged (quote-only)");
+    if (!CFG.forms.customEndpoint) miss.push("forms.customEndpoint → custom intake opens an email draft (not auto-sent; image not attached)");
+    if (!CFG.forms.supplierEndpoint) miss.push("forms.supplierEndpoint → supplier inquiry opens an email draft");
+    if (!Object.keys((CFG.stripe && CFG.stripe.paymentLinks) || {}).length) miss.push("stripe.paymentLinks → screen/full are not directly payable; flow is scope-confirm → payment link");
     if (!A.ga4Id && !A.metaPixelId) miss.push("analytics ids → tracking disabled");
-    miss.push("paid reports available: " + availableReports().length + " (target 10; need status:'available' + stripe link + delivery, and not freelyAvailable)");
     console.info("%c[SourceVerdict] launch config", "font-weight:bold;color:#244BEB", miss);
   }
+
+  /* ---------- Retire obsolete pack session state ---------- */
+  try { sessionStorage.removeItem("sv_pack"); sessionStorage.removeItem("sv_pack_size"); } catch (e) { }
 
   /* ---------- Boot ---------- */
   observeReveals();
