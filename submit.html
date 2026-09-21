@@ -4,14 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Submit your product — SourceVerdict</title>
-  <meta name="description" content="Submit the product you want to sell: a photo and purchase or supplier link, your business location, target market and channel. Choose a $99 Custom Product Screen or $249 Full Product Launch Report. No payment on this form — we confirm scope first." />
+  <meta name="description" content="Submit the product you want to sell: a photo and purchase or supplier link. Choose a $29 Single Product Report, $49 Two Product Reports, or the $249 Complete Business Launch Consultation. No payment on this form — we confirm scope first." />
   <link rel="canonical" href="https://www.sourceverdict.net/submit.html" />
   <meta name="theme-color" content="#FFF9F1" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#0c0f16" media="(prefers-color-scheme: dark)" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="SourceVerdict" />
   <meta property="og:title" content="Submit your product — SourceVerdict" />
-  <meta property="og:description" content="A $99 Custom Product Screen or a $249 Full Product Launch Report on the product you want to sell." />
+  <meta property="og:description" content="A $29 single report, $49 for two, or the $249 Complete Business Launch Consultation." />
   <meta property="og:url" content="https://www.sourceverdict.net/submit.html" />
   <meta property="og:image" content="https://www.sourceverdict.net/assets/img/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -50,7 +50,7 @@
         <p class="breadcrumb"><a href="index.html">Home</a> · Submit your product</p>
         <span class="eyebrow">Your product</span>
         <h1 class="h1 mt-1">Submit the product you want to sell.</h1>
-        <p class="lead measure">Send a product photo and a purchase or supplier link. Pick a Custom Product Screen or a Full Product Launch Report, and we'll investigate the exact product, market and channel you name.</p>
+        <p class="lead measure">Send a product photo and a purchase or supplier link. Pick a service and we'll investigate the exact product, market and channel you name.</p>
       </div>
     </section>
 
@@ -63,85 +63,111 @@
 
             <fieldset class="field" data-required-group style="border:0;padding:0;margin:0 0 4px">
               <legend class="eyebrow eyebrow--blue" style="margin-bottom:14px">Choose your service <span class="req" aria-hidden="true">*</span></legend>
-              <div class="radio-cards">
-                <label class="radio-card" data-tier="screen">
-                  <input type="radio" name="tier" value="screen" />
-                  <div class="rc-name">Custom Product Screen</div>
-                  <div class="rc-price">$99</div>
-                  <div class="rc-note">Initial assessment: competition, pricing, as-sourced vs improvement, next test</div>
+              <div class="radio-cards radio-cards--3">
+                <label class="radio-card" data-tier="single">
+                  <input type="radio" name="tier" value="single" />
+                  <div class="rc-name">Single Product Report</div>
+                  <div class="rc-price">$29</div>
+                  <div class="rc-note">One product — research &amp; next step</div>
                 </label>
-                <label class="radio-card" data-tier="full">
-                  <input type="radio" name="tier" value="full" />
-                  <div class="rc-name">Full Product Launch Report</div>
+                <label class="radio-card" data-tier="two">
+                  <input type="radio" name="tier" value="two" />
+                  <div class="rc-name">Two Product Reports</div>
+                  <div class="rc-price">$49</div>
+                  <div class="rc-note">Two products — research each + comparison</div>
+                </label>
+                <label class="radio-card" data-tier="consultation">
+                  <input type="radio" name="tier" value="consultation" />
+                  <div class="rc-name">Complete Consultation</div>
                   <div class="rc-price">$249</div>
-                  <div class="rc-note">Launch plan: routes compared, development concept, negotiation kit &amp; financial consultation</div>
+                  <div class="rc-note">One product — launch plan + finance</div>
                 </label>
               </div>
               <p class="field-error" style="display:none">Please choose a service.</p>
             </fieldset>
 
-            <hr class="hr" style="margin-block:28px" />
+            <div class="note" id="order-summary" style="margin:14px 0 4px;font-weight:700">Select a service above</div>
+
+            <hr class="hr" style="margin-block:24px" />
 
             <div class="two-col">
               <div class="field"><label for="name">Your name <span class="req" aria-hidden="true">*</span></label><input class="input" id="name" name="name" type="text" autocomplete="name" data-required><p class="field-error">Please enter your name.</p></div>
               <div class="field"><label for="email">Email <span class="req" aria-hidden="true">*</span></label><input class="input" id="email" name="email" type="email" autocomplete="email" data-required><p class="field-error">Please enter a valid email.</p></div>
             </div>
 
-            <div class="field">
-              <label for="product">The product you want to sell <span class="req" aria-hidden="true">*</span></label>
-              <input class="input" id="product" name="product" type="text" placeholder="e.g. printed wooden watch" data-required>
-              <p class="field-error">Please tell us the product.</p>
-            </div>
-
-            <div class="field">
-              <label for="product_link">Purchase or supplier link <span class="opt">(recommended)</span></label>
-              <input class="input" id="product_link" name="product_link" type="url" inputmode="url" placeholder="https:// (Amazon, AliExpress, Alibaba…)">
-              <p class="help">Send a link <em>and</em> a photo if you can. One is enough to start — we'll confirm what else we need.</p>
-            </div>
-
-            <div class="field">
-              <label for="product-image">Product photo <span class="opt">(recommended)</span></label>
-              <div class="file-drop" tabindex="0" role="button" aria-label="Upload a product photo">
-                <input type="file" id="product-image" name="product_image" accept="image/*" />
-                <div><strong>Drop a photo here</strong> or click to browse</div>
-                <div class="help">PNG or JPG, up to 10&nbsp;MB.</div>
-                <div class="file-name" aria-live="polite"></div>
+            <!-- Product 1 -->
+            <fieldset style="border:0;padding:0;margin:0">
+              <legend style="font-weight:700;font-size:1.05rem;margin-bottom:12px"><span id="product1-heading">Your product</span></legend>
+              <div class="field"><label for="product1">Product name or description <span class="req" aria-hidden="true">*</span></label><input class="input" id="product1" name="product1" type="text" placeholder="e.g. printed wooden watch" data-required><p class="field-error">Please tell us the product.</p></div>
+              <div class="field"><label for="product1_link">Purchase or supplier link <span class="opt">(recommended)</span></label><input class="input" id="product1_link" name="product1_link" type="url" inputmode="url" placeholder="https:// (Amazon, AliExpress, Alibaba…)"><p class="help">Send a link <em>and</em> a photo if you can — one is enough to start.</p></div>
+              <div class="field">
+                <label for="product1-image">Product photo <span class="opt">(recommended)</span></label>
+                <div class="file-drop" tabindex="0" role="button" aria-label="Upload a photo of your product">
+                  <input type="file" id="product1-image" name="product1_image" accept="image/*" />
+                  <div><strong>Drop a photo here</strong> or click to browse</div>
+                  <div class="help">PNG or JPG, up to 10&nbsp;MB.</div>
+                  <div class="file-name" aria-live="polite"></div>
+                </div>
               </div>
-            </div>
+            </fieldset>
+
+            <!-- Product 2 (only for the $49 two-product service) -->
+            <fieldset id="product2-block" hidden style="border:0;padding:0;margin:0;border-top:1px solid var(--border);padding-top:20px">
+              <legend style="font-weight:700;font-size:1.05rem;margin-bottom:12px">Product 2</legend>
+              <div class="field"><label for="product2">Product name or description <span class="req" aria-hidden="true">*</span></label><input class="input" id="product2" name="product2" type="text" placeholder="The second product to compare" data-req-two><p class="field-error">Please tell us the second product.</p></div>
+              <div class="field"><label for="product2_link">Purchase or supplier link <span class="opt">(recommended)</span></label><input class="input" id="product2_link" name="product2_link" type="url" inputmode="url" placeholder="https://"></div>
+              <div class="field">
+                <label for="product2-image">Product photo <span class="opt">(recommended)</span></label>
+                <div class="file-drop" tabindex="0" role="button" aria-label="Upload a photo of the second product">
+                  <input type="file" id="product2-image" name="product2_image" accept="image/*" />
+                  <div><strong>Drop a photo here</strong> or click to browse</div>
+                  <div class="help">PNG or JPG, up to 10&nbsp;MB.</div>
+                  <div class="file-name" aria-live="polite"></div>
+                </div>
+              </div>
+            </fieldset>
+
+            <hr class="hr" style="margin-block:24px" />
 
             <div class="two-col">
               <div class="field"><label for="business_country">Where is your business based? <span class="req" aria-hidden="true">*</span></label>
                 <select class="select" id="business_country" name="business_country" data-required><option value="">Select…</option><option>United States</option><option>Canada</option><option>Other</option></select>
                 <p class="field-error">Please choose where your business is based.</p></div>
               <div class="field"><label for="sell_market">Where do you plan to sell? <span class="req" aria-hidden="true">*</span></label>
-                <select class="select" id="sell_market" name="sell_market" data-required><option value="">Select…</option><option value="US">United States</option><option value="Canada">Canada</option><option value="Both">Both (US + Canada)</option><option value="Other">Other</option></select>
-                <p class="field-error">Please choose a target market.</p></div>
+                <select class="select" id="sell_market" name="sell_market" data-required><option value="">Select…</option><option value="US">United States</option><option value="Canada">Canada</option><option value="Other">Other</option></select>
+                <p class="field-error">Please choose a selling market.</p></div>
             </div>
-            <p class="help" style="margin-top:-8px;margin-bottom:20px">Standard scope is one market and one channel. Selling in both the US and Canada may need scope confirmation before payment — we'll never charge for two investigations as one.</p>
+            <p class="help" style="margin-top:-8px;margin-bottom:20px">Standard scope is one target market and one channel. Your business location is where you're based — not automatically where you'll sell or borrow.</p>
 
             <div class="two-col">
-              <div class="field"><label for="channel">Primary channel <span class="req" aria-hidden="true">*</span></label>
+              <div class="field"><label for="channel">Primary sales channel <span class="req" aria-hidden="true">*</span></label>
                 <select class="select" id="channel" name="channel" data-required><option value="">Select…</option><option>Amazon</option><option>Etsy</option><option>Shopify / own store</option><option>Retail / wholesale</option><option>Other / not sure</option></select>
                 <p class="field-error">Please choose a channel.</p></div>
-              <div class="field"><label for="import_destination">Import destination, if different <span class="opt">(optional)</span></label><input class="input" id="import_destination" name="import_destination" type="text" placeholder="Where the goods land, if not where you're based"></div>
+              <div class="field"><label for="quantity">Starting quantity <span class="opt">(optional)</span></label><input class="input" id="quantity" name="quantity" type="text" placeholder="e.g. ~300 units, or 'not sure yet'"></div>
             </div>
-
-            <div class="field"><label for="customer">Target customer / use <span class="opt">(optional)</span></label><input class="input" id="customer" name="customer" type="text" placeholder="Who's it for, and what problem does it solve?"></div>
 
             <div class="two-col">
               <div class="field"><label for="budget">Approx. budget to start <span class="opt">(optional)</span></label>
                 <div style="display:grid;grid-template-columns:1fr auto;gap:10px">
-                  <input class="input" id="budget" name="budget" type="text" placeholder="e.g. 3000 or 'unsure'">
+                  <input class="input" id="budget" name="budget" type="text" placeholder="e.g. 3000 or 'not sure yet'">
                   <select class="select" id="currency" name="currency" aria-label="Budget currency" style="width:auto"><option value="USD">USD</option><option value="CAD">CAD</option><option value="Other">Other</option></select>
                 </div>
               </div>
-              <div class="field"><label for="quantity">Starting quantity <span class="opt">(optional)</span></label><input class="input" id="quantity" name="quantity" type="text" placeholder="e.g. ~300 units, or 'unsure'"></div>
+              <div class="field"><label for="approach">Preferred approach <span class="opt">(optional)</span></label>
+                <select class="select" id="approach" name="approach"><option value="">Not sure yet — advise me</option><option>Sell as sourced</option><option>Open to improvements</option><option>Compare both</option></select>
+              </div>
             </div>
 
-            <div class="field"><label for="approach">Preferred approach <span class="opt">(optional)</span></label>
-              <select class="select" id="approach" name="approach"><option value="">No preference — advise me</option><option>Sell as sourced</option><option>Open to improvements</option><option>Compare both</option></select>
-              <p class="help">We compare both routes either way — this just tells us where you're leaning.</p>
-            </div>
+            <!-- Consultation extras (only for the $249 service) -->
+            <fieldset id="consult-block" hidden style="border:0;padding:0;margin:0;border-top:1px solid var(--border);padding-top:20px">
+              <legend style="font-weight:700;font-size:1.05rem;margin-bottom:12px">Consultation details</legend>
+              <div class="two-col">
+                <div class="field"><label for="business_stage">Business stage <span class="opt">(optional)</span></label>
+                  <select class="select" id="business_stage" name="business_stage"><option value="">Not sure yet</option><option>Just an idea</option><option>Preparing to launch</option><option>Already selling</option></select></div>
+                <div class="field"><label for="finance_help">What would you like help financing? <span class="opt">(optional)</span></label>
+                  <select class="select" id="finance_help" name="finance_help"><option value="">Not sure yet</option><option>Product samples</option><option>First inventory order</option><option>Samples + inventory</option><option>Other launch costs</option></select></div>
+              </div>
+            </fieldset>
 
             <div class="field">
               <label for="decision">The decision you need to make <span class="req" aria-hidden="true">*</span></label>
@@ -165,21 +191,22 @@
               <span class="eyebrow eyebrow--blue" style="margin-bottom:6px">What happens next</span>
               <h3 class="mt-1">Four simple steps</h3>
               <ul>
-                <li><span class="tick" aria-hidden="true">1</span><span>We review your product and confirm the scope.</span></li>
+                <li><span class="tick" aria-hidden="true">1</span><span>We review your product(s) and confirm the scope.</span></li>
                 <li><span class="tick" aria-hidden="true">2</span><span>We send a secure payment link for your service.</span></li>
-                <li><span class="tick" aria-hidden="true">3</span><span>We investigate — as sourced vs improved.</span></li>
-                <li><span class="tick" aria-hidden="true">4</span><span>You receive your investigation, launch options, financial guidance for your service, and a recommended next step.</span></li>
+                <li><span class="tick" aria-hidden="true">3</span><span>We research — as sourced vs improved.</span></li>
+                <li><span class="tick" aria-hidden="true">4</span><span>You receive your report(s), and — for the $249 service — a personalized consultation and launch plan.</span></li>
               </ul>
             </div>
             <div class="aside-card">
               <h3>Good to know</h3>
               <ul>
                 <li><span class="tick" aria-hidden="true">✓</span><span>Customization is optional — we compare both routes.</span></li>
-                <li><span class="tick" aria-hidden="true">✓</span><span>A listed supplier MOQ is not an automatic "no" — we explore pilot quantities.</span></li>
+                <li><span class="tick" aria-hidden="true">✓</span><span>A listed supplier MOQ is not an automatic "no."</span></li>
                 <li><span class="tick" aria-hidden="true">✓</span><span>Estimates are labelled; nothing is a guaranteed outcome.</span></li>
+                <li><span class="tick" aria-hidden="true">✓</span><span>Finance suggestions are consultation, not funding.</span></li>
               </ul>
             </div>
-            <div class="note">Need outreach, quotes or negotiation? That's <a href="supplier-validation.html">Supplier Validation &amp; Negotiation Support</a> (from $750).</div>
+            <div class="note">Not sure which to pick? <a href="pricing.html">Compare the three services</a>.</div>
           </aside>
         </div>
       </div>
@@ -199,7 +226,7 @@
           <a href="reports.html">Sample &amp; cases</a>
           <a href="sample-report.html">Free sample</a>
           <a href="submit.html">Submit your product</a>
-          <a href="supplier-validation.html">Supplier support</a>
+          <a href="pricing.html#consultation">Complete consultation</a>
         </nav>
         <nav class="footer-col" aria-label="Company">
           <h4>Company</h4>
