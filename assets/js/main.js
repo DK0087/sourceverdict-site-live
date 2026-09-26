@@ -206,7 +206,7 @@
     });
   }
 
-  /* ---------- Product research + consultation order (submit.html) ---------- */
+  /* ---------- Personalized report / consultation order (submit.html) ---------- */
   function initOrderForm() {
     var form = $("#order-form"); if (!form) return;
     var params = new URLSearchParams(location.search);
@@ -214,7 +214,7 @@
     var banner = $("#order-context");
     var tier = params.get("tier");
     var legacyNote = "";
-    if (tier && map[tier]) { legacyNote = "This service has been updated — showing the current option that fits."; tier = map[tier]; }
+    if (tier && map[tier]) { legacyNote = "Our offers were updated — showing the current option that fits."; tier = map[tier]; }
 
     $$(".radio-card[data-tier]", form).forEach(function (card) {
       var key = card.getAttribute("data-tier"), o = CFG.offers[key];
@@ -229,26 +229,15 @@
       if (banner) { banner.style.display = "block"; banner.textContent = legacyNote; }
     }
 
-    var p2 = $("#product2-block", form);
     var consult = $("#consult-block", form);
     var summary = $("#order-summary", form);
-    var p1h = $("#product1-heading", form);
     function currentTier() { var c = form.querySelector('input[name="tier"]:checked'); return c ? c.value : ""; }
     function applyTier() {
-      var key = currentTier(), isTwo = key === "two", isConsult = key === "consultation";
-      if (p1h) p1h.textContent = isTwo ? "Product 1" : "Your product";
-      if (p2) {
-        p2.hidden = !isTwo;
-        $$("[data-req-two]", p2).forEach(function (el) {
-          if (isTwo) { el.setAttribute("data-required", ""); }
-          else { el.removeAttribute("data-required"); (el.closest(".field") || el.parentNode).classList.remove("invalid"); }
-        });
-      }
-      if (consult) consult.hidden = !isConsult;
+      var key = currentTier();
+      if (consult) consult.hidden = key !== "consultation";
       if (summary) {
-        summary.textContent = key === "single" ? "One product — $29"
-          : key === "two" ? "Two products — $49 total"
-          : key === "consultation" ? "Complete consultation for one product — $249"
+        summary.textContent = key === "personalized" ? "Personalized report — one product, $49"
+          : key === "consultation" ? "Personal launch consultation — one product, $249"
           : "Select a service above";
       }
     }
@@ -269,16 +258,47 @@
         var g = function (n) { var el = f.querySelector('[name="' + n + '"]'); return el ? el.value : ""; };
         var chk = function (n) { var el = f.querySelector('[name="' + n + '"]'); return el && el.checked ? "yes" : "no"; };
         var key = currentTier();
-        var priceLbl = key === "single" ? "$29" : key === "two" ? "$49 total" : key === "consultation" ? "$249" : "";
+        var priceLbl = key === "personalized" ? "$49" : key === "consultation" ? "$249" : "";
         var lines = ["Service: " + key + " (" + priceLbl + ")", "Name: " + g("name"), "Email: " + g("email"),
-          "Product 1: " + g("product1"), "Product 1 link: " + g("product1_link")];
-        if (key === "two") { lines.push("Product 2: " + g("product2"), "Product 2 link: " + g("product2_link")); }
-        lines.push("Business based in: " + g("business_country"), "Plan to sell in: " + g("sell_market"), "Channel: " + g("channel"),
-          "Approx. budget: " + g("budget") + " " + g("currency"), "Starting quantity: " + g("quantity"), "Preferred approach: " + g("approach"));
-        if (key === "consultation") { lines.push("Business stage: " + g("business_stage"), "Help financing: " + g("finance_help")); }
+          "Product: " + g("product1"), "Product link: " + g("product1_link"),
+          "Business/borrower country: " + g("business_country"), "Selling market: " + g("sell_market"), "Channel: " + g("channel"),
+          "Starting budget: " + g("budget") + " " + g("currency"), "Starting quantity: " + g("quantity"),
+          "Customization interest: " + g("approach")];
+        if (key === "consultation") { lines.push("Business stage: " + g("business_stage"), "What needs funding: " + g("finance_help")); }
         lines.push("Decision needed: " + g("decision"), "Marketing consent: " + chk("marketing_consent"));
         return lines.join("\n");
       }
+    });
+  }
+
+  /* ---------- Free-sample email capture (sample-report.html) ----------
+     Honest: sends only via a configured server endpoint. With no endpoint
+     we never claim "Sent" and never expose a public PDF that bypasses the
+     email flow — we point to a real inbox instead. */
+  function initSampleEmailForm() {
+    var form = $("#sample-email-form"); if (!form) return;
+    var statusEl = $(".form-status", form);
+    var endpoint = (CFG.forms && CFG.forms.sampleEmailEndpoint) || "";
+    var emailEl = form.querySelector('input[type="email"]');
+    var consentEl = form.querySelector('[name="marketing_consent"]');
+    function status(kind, msg) { statusEl.className = "form-status " + kind; statusEl.innerHTML = msg; }
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = (emailEl.value || "").trim();
+      var wrap = emailEl.closest(".field") || form;
+      if (!/.+@.+\..+/.test(email)) { wrap.classList.add("invalid"); status("err", "Please enter a valid email address."); emailEl.focus(); return; }
+      wrap.classList.remove("invalid");
+      window.svTrack("sample_email_submitted");
+      if (!endpoint) {
+        status("ok", "<strong>Thanks — automated delivery is being set up.</strong> Our sample email isn’t live yet, so email <a href='mailto:" + (CFG.forms.fallbackEmail) + "?subject=Free%20tech-pouch%20sample'>" + (CFG.forms.fallbackEmail) + "</a> and we’ll send your link to the full interactive report.");
+        return;
+      }
+      var btn = form.querySelector('[type="submit"]'); btn.disabled = true; var label = btn.textContent; btn.textContent = "Sending…";
+      var body = new FormData(); body.append("email", email); body.append("sample", "everyday-tech-pouch"); body.append("marketing_consent", consentEl && consentEl.checked ? "yes" : "no");
+      fetch(endpoint, { method: "POST", body: body, headers: { Accept: "application/json" } })
+        .then(function (res) { if (!res.ok) throw new Error("bad"); form.reset(); status("ok", "<strong>Check your inbox.</strong> We’ve emailed a link to the full interactive report (with a PDF download inside). If it doesn’t arrive shortly, check spam or email " + (CFG.forms.fallbackEmail) + "."); window.svTrack("sample_email_delivered"); })
+        .catch(function () { status("err", "We couldn’t send that just now. Please try again, or email <a href='mailto:" + (CFG.forms.fallbackEmail) + "'>" + (CFG.forms.fallbackEmail) + "</a> and we’ll send your link."); })
+        .finally(function () { btn.disabled = false; btn.textContent = label; });
     });
   }
 
@@ -298,9 +318,11 @@
   function reportMissingConfig() {
     if (!window.console) return;
     var miss = [];
-    if (!CFG.forms.customEndpoint) miss.push("forms.customEndpoint → intake opens an email draft (not auto-sent; images not attached)");
+    if (!CFG.forms.customEndpoint) miss.push("forms.customEndpoint → $49/$249 intake opens an email draft (not auto-sent; images not attached)");
+    if (!CFG.forms.sampleEmailEndpoint) miss.push("forms.sampleEmailEndpoint → free-sample email delivery NOT live (needs email provider + backend + hosted gated report on the domain)");
     var links = (CFG.stripe && CFG.stripe.paymentLinks) || {};
-    ["single", "two", "consultation"].forEach(function (k) { if (!links[k]) miss.push("stripe.paymentLinks." + k + " → " + k + " not directly payable (scope-confirm → payment link)"); });
+    ["personalized", "consultation"].forEach(function (k) { if (!links[k]) miss.push("stripe.paymentLinks." + k + " → " + k + " not directly payable (scope-confirm → payment link)"); });
+    miss.push("weekly $29 cases: none released/payable yet (caseCadenceActive=" + (CFG.caseCadenceActive ? "true" : "false") + ")");
     if (!A.ga4Id && !A.metaPixelId) miss.push("analytics ids → tracking disabled");
     console.info("%c[SourceVerdict] launch config", "font-weight:bold;color:#244BEB", miss);
   }
@@ -313,6 +335,7 @@
   renderCatalog();
   renderReportDetail();
   initOrderForm();
+  initSampleEmailForm();
   renderPartner();
   reportMissingConfig();
   var y = $("#year"); if (y) y.textContent = new Date().getFullYear();

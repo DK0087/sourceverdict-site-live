@@ -4,6 +4,7 @@
    Prices are USD, before applicable taxes.
    Nothing here charges a card. Paid services use an inquiry →
    scope-confirm → secure payment-link flow (see main.js).
+   Approved direction: 2026-09-25 (DK).
    ===================================================================== */
 window.SV_CONFIG = {
   site: {
@@ -14,93 +15,99 @@ window.SV_CONFIG = {
   },
 
   /* ---------------------------------------------------------------
-     THE OFFERS — one free sample + exactly THREE paid services.
-     All paid work investigates the customer's SUBMITTED product(s).
-     We do NOT sell premade case reports. Do not add a 4th paid offer
-     or a separate finance tier (finance is inside the $249 service).
-     `checkoutRef` maps into stripe.paymentLinks; empty => the offer
-     routes to its inquiry/order flow (no direct checkout).
-     IDs (sample/single/two/consultation) are stable — used by query
-     params and records. Legacy ?tier=screen|full map to these in main.js.
+     THE OFFERS — one FREE sample + exactly THREE paid offers.
+       sample        Free  — Everyday Tech Pouch (email-gated report)
+       case          $29   — Weekly Case Report (SourceVerdict-selected,
+                             NOT personalized). One new case per week is
+                             PLANNED. Show a buy button only for a released
+                             case with a configured price + delivery; else
+                             "Coming soon". Never charge $29 for the sample.
+       personalized  $49   — Personalized Product Report: ONE customer-
+                             submitted product, one market, one channel.
+       consultation  $249  — Personal Launch Consultation (highlighted):
+                             in-depth report + consultation + agreed supplier
+                             validation + business finance suggestions.
+     Retired everywhere: $49 two-product pack, $29 custom report, $99 screen,
+     public "$750" supplier offer. Keep historical orders/entitlements.
+     Do NOT add a 4th paid offer. IDs are stable.
      --------------------------------------------------------------- */
   offers: {
     sample: {
       id: "sample", order: 1, kind: "sample",
-      name: "Complete Sample Report", priceLabel: "Free", price: 0,
-      summary: "One complete worked example — free to read, so you can see how we investigate a product.",
-      cta: "View free sample", href: "sample-report.html", checkoutRef: ""
+      name: "The Everyday Tech Pouch", priceLabel: "Free", price: 0,
+      summary: "A real, complete 12-page worked example: research, as-sourced vs an optional improvement, buyer feedback, supplier questions, a 100–500-unit sensitivity, and qualified launch-finance planning. Sent to your email.",
+      cta: "Get the free report", href: "sample-report.html", checkoutRef: ""
     },
-    single: {
-      id: "single", order: 2, kind: "custom",
-      name: "Single Product Report", priceLabel: "$29", price: 29,
-      summary: "A focused research report on the product you want to sell: comparable products, competition and pricing, demand signals, customer-review themes, preliminary costs and margins, supplier questions, key risks and your next step. One product, one target market, one channel.",
-      cta: "Investigate my product", href: "submit.html?tier=single", checkoutRef: "single"
+    case: {
+      id: "case", order: 2, kind: "catalog",
+      name: "Weekly Case Report", priceLabel: "$29", price: 29,
+      summary: "A researched report on one product selected and published by SourceVerdict — not personalized to you. New cases are planned weekly; each is $29 when released.",
+      cta: "See the cases", href: "reports.html", checkoutRef: "" // per-case link set on each released case
     },
-    two: {
-      id: "two", order: 3, kind: "custom",
-      name: "Two Product Reports", priceLabel: "$49", price: 49,
-      summary: "The same research as the Single Product Report on two submitted products, plus a side-by-side comparison of costs, competition and opportunity and a recommendation on which to test first. Two products, one shared target market and channel. Saves $9 versus two separate reports.",
-      cta: "Compare my two products", href: "submit.html?tier=two", checkoutRef: "two"
+    personalized: {
+      id: "personalized", order: 3, kind: "custom",
+      name: "Personalized Product Report", priceLabel: "$49", price: 49,
+      summary: "The complete written investigation of ONE product you submit — one target market, one channel: verified visual matches and same-category alternatives, observed prices and qualified demand signals, review themes and unmet needs, a fair sell-as-sourced route, an optional custom-design suggestion, preliminary sourcing/negotiation/price/contribution scenarios, risks and next tests.",
+      cta: "Submit your product", href: "submit.html?tier=personalized", checkoutRef: "personalized"
     },
     consultation: {
       id: "consultation", order: 4, kind: "custom", highlight: true,
-      name: "Complete Business Launch Consultation", priceLabel: "$249", price: 249,
-      summary: "An in-depth product investigation and personalized consultation for one selected product: competition, demand and review analysis; sell-as-sourced vs optional customization with costs and pricing scenarios; an optional design concept and supplier development brief; supplier screening and a price/small-order negotiation kit; a startup budget, cash-flow plan and business finance suggestions; and a practical launch action plan.",
-      cta: "Start my complete consultation", href: "submit.html?tier=consultation", checkoutRef: "consultation"
+      name: "Personal Launch Consultation", priceLabel: "$249", price: 249,
+      summary: "One chosen product: in-depth report plus a personal consultation. Includes agreed supplier validation (identity/listing/document checks and quote-comparability review with findings and gaps), a development and small-order negotiation plan, launch budget and cash-flow/downside assessment, and relevant business finance options by borrower country and stage. Format, timing, document checks and any contact authority are confirmed before payment.",
+      cta: "Start a launch consultation", href: "submit.html?tier=consultation", checkoutRef: "consultation"
     }
   },
 
+  /* Weekly cadence is PLANNED, not active. Flip to true only once real
+     weekly case releases begin (changes homepage copy to "New case every week"). */
+  caseCadenceActive: false,
+
   /* Legacy ?tier= values → current offer key (main.js shows a note). */
-  legacyTierMap: { screen: "single", full: "consultation" },
+  legacyTierMap: { single: "personalized", two: "personalized", screen: "personalized", full: "consultation" },
 
   /* ---------------------------------------------------------------
      STRIPE — real integration only. No fictional links, keys or IDs.
-     Add hosted Payment Link URLs keyed by checkoutRef (single/two/
-     consultation) to enable pay-after-scope. Stripe owns the price,
-     so the browser never sets it. A legacy $29 premade-case product
-     is NOT the new $29 custom report — verify amount + description
+     Add hosted Payment Link URLs keyed by checkoutRef (personalized /
+     consultation) and per released case id. A legacy $29 product built
+     for another service is NOT the new offer — verify amount + product
      before reusing any link.
      --------------------------------------------------------------- */
   stripe: {
-    mode: "test", // "test" | "live" — keep separate
+    mode: "test",
     paymentLinks: {
-      // single:       "https://buy.stripe.com/....",  // Single Product Report $29
-      // two:          "https://buy.stripe.com/....",  // Two Product Reports $49
-      // consultation: "https://buy.stripe.com/...."   // Complete Business Launch Consultation $249
+      // personalized: "https://buy.stripe.com/....",  // $49
+      // consultation: "https://buy.stripe.com/....",  // $249
+      // "case-YYYY-WW":  "https://buy.stripe.com/...." // a released weekly case
     }
   },
 
   /* ---------------------------------------------------------------
-     FORMS — real submission only. Paste an endpoint (Formspree/Getform/
-     your handler). Empty => the form opens an honest email DRAFT (it is
-     NOT sent automatically and images are NOT attached — see main.js).
-     Report DELIVERY is a separate verified process, not the success URL.
+     FORMS / EMAIL — real submission only.
+       customEndpoint      : $49 / $249 intake (server receipt).
+       sampleEmailEndpoint : free-sample email capture → server sends a
+                             branded link to the interactive report on
+                             sourceverdict.net (signed/expiring), which
+                             offers a PDF download. NO public/guessable
+                             PDF URL may bypass this. Empty => the UI is
+                             honest that delivery is being set up (never
+                             shows "Sent" without a real provider ack).
+     Secrets/keys live ONLY in the deployment environment, never here.
      --------------------------------------------------------------- */
   forms: {
-    customEndpoint: "",   // product research + consultation intake
+    customEndpoint: "",
+    sampleEmailEndpoint: "",
     fallbackEmail: "hello@sourceverdict.net",
     maxUploadMB: 10
   },
 
-  /* ---------------------------------------------------------------
-     DELIVERY — how a paid report reaches the buyer.
-     "manual" = clearly-stated manual delivery for launch (allowed).
-     Do NOT unlock files on the success URL alone.
-     --------------------------------------------------------------- */
+  /* DELIVERY — manual for launch; never unlock files on a success URL alone. */
   delivery: { method: "manual" },
 
-  /* ---------------------------------------------------------------
-     ANALYTICS — placeholders only, no fake IDs. Loads only when set.
-     --------------------------------------------------------------- */
+  /* ANALYTICS — placeholders only; loads only when set. Never log image/email content. */
   analytics: { ga4Id: "", metaPixelId: "" },
 
-  /* ---------------------------------------------------------------
-     PARTNER RESOURCES — prepared, INACTIVE by default. Renders nothing
-     until `active:true` AND real approved items exist. Never advertise
-     free capital, guaranteed approvals, active lender partnerships or
-     specific finance-program terms without verified support. Financial
-     consultation in the $249 service is SourceVerdict's own advice,
-     shown independently of this module.
-     --------------------------------------------------------------- */
+  /* PARTNER RESOURCES — INACTIVE. Finance help in the $249 service is
+     SourceVerdict's own consultation, not a lender relationship. Never
+     advertise guaranteed approval, free capital or specific lender terms. */
   partner: { active: false, items: [] }
 };

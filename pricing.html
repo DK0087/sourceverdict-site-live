@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Product Reports &amp; Launch Consultation — SourceVerdict</title>
-  <meta name="description" content="Investigate one product for $29 or two for $49. Get complete launch consultation with business finance suggestions for $249. One-time USD pricing." />
+  <title>Pricing — SourceVerdict</title>
+  <meta name="description" content="A free complete sample, plus three paid offers: $29 Weekly Case Report, $49 Personalized Product Report on your product, and the $249 Personal Launch Consultation with supplier validation and business finance suggestions. One-time USD pricing." />
   <link rel="canonical" href="https://www.sourceverdict.net/pricing.html" />
   <meta name="theme-color" content="#FFF9F1" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#0c0f16" media="(prefers-color-scheme: dark)" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="SourceVerdict" />
-  <meta property="og:title" content="Product Reports & Launch Consultation — SourceVerdict" />
-  <meta property="og:description" content="One product $29 · two products $49 · complete launch consultation with business finance suggestions $249. One-time USD pricing." />
+  <meta property="og:title" content="SourceVerdict — pricing" />
+  <meta property="og:description" content="Free sample + $29 weekly case, $49 personalized product report, and $249 launch consultation with supplier validation and finance suggestions." />
   <meta property="og:url" content="https://www.sourceverdict.net/pricing.html" />
   <meta property="og:image" content="https://www.sourceverdict.net/assets/img/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -28,9 +28,9 @@
     "@type": "OfferCatalog",
     "name": "SourceVerdict offers",
     "itemListElement": [
-      { "@type": "Offer", "name": "Single Product Report", "price": "29", "priceCurrency": "USD" },
-      { "@type": "Offer", "name": "Two Product Reports", "price": "49", "priceCurrency": "USD" },
-      { "@type": "Offer", "name": "Complete Business Launch Consultation", "price": "249", "priceCurrency": "USD" }
+      { "@type": "Offer", "name": "Weekly Case Report", "price": "29", "priceCurrency": "USD", "availability": "https://schema.org/PreOrder" },
+      { "@type": "Offer", "name": "Personalized Product Report", "price": "49", "priceCurrency": "USD" },
+      { "@type": "Offer", "name": "Personal Launch Consultation", "price": "249", "priceCurrency": "USD" }
     ]
   }
   </script>
@@ -57,82 +57,92 @@
   </header>
 
   <main id="main">
-    <!-- Hero -->
     <section class="page-hero">
       <div class="container container--narrow center" style="text-align:center">
         <p class="breadcrumb" style="text-align:left"><a href="index.html">Home</a> · Pricing</p>
-        <span class="eyebrow" style="justify-content:center">Product research &amp; business launch support</span>
-        <h1 class="h1 mt-1 balance">Your product idea. A clearer plan to sell it.</h1>
-        <p class="lead mx-auto" style="max-width:58ch">Send us a product photo and purchase link. Understand the competition, pricing and opportunities — or choose complete consultation to plan your launch, startup budget and business finance options.</p>
-        <p class="outcome mt-2" style="justify-content:center">We provide financial consultation to help you start your business, included in our $249 consultation package.</p>
+        <span class="eyebrow" style="justify-content:center">Offers &amp; pricing</span>
+        <h1 class="h1 mt-1 balance">One free sample. Three ways to go further.</h1>
+        <p class="lead mx-auto" style="max-width:56ch">Read a complete sample at no cost, then choose the level of research your decision needs. One-time prices in USD, before applicable taxes. We confirm your scope before payment.</p>
         <div class="btn-row mt-2" style="justify-content:center">
-          <a class="btn btn--primary btn--lg" href="#consultation" data-order="consultation">Explore complete consultation <span class="arrow" aria-hidden="true">→</span></a>
-          <a class="btn btn--outline btn--lg" href="sample-report.html" data-full-report>View free sample</a>
+          <a class="btn btn--primary btn--lg" href="submit.html?tier=personalized" data-order="personalized">Submit your product ($49) <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn--outline btn--lg" href="sample-report.html" data-full-report>Get the free sample</a>
         </div>
-        <p class="avail-note" style="max-width:60ch;margin-inline:auto">One-time prices in USD, before applicable taxes. We confirm your scope before payment.</p>
       </div>
     </section>
 
-    <!-- Three cards -->
-    <section class="section section--paper" style="padding-top:clamp(20px,3vw,36px)">
+    <!-- Free sample strip (separate from the paid cards) -->
+    <section class="section section--paper" style="padding-top:clamp(20px,3vw,36px);padding-bottom:0">
       <div class="container">
-        <div class="offers reveal">
-          <!-- $29 -->
+        <div class="supplier-strip reveal" style="background:var(--blue)">
+          <div>
+            <span class="badge badge--sample" style="background:rgba(255,255,255,.16);color:#fff">Free complete sample</span>
+            <h2 class="h3 mt-1" style="color:#fff">The Everyday Tech Pouch — a real 12-page investigation</h2>
+            <p style="color:rgba(255,255,255,.9)">As-sourced vs an optional improvement, buyer feedback, supplier questions, a 100–500-unit sensitivity and qualified launch-finance planning. Sent to your email.</p>
+          </div>
+          <div><a class="btn btn--primary btn--lg" href="sample-report.html" data-full-report>Get the free report <span class="arrow" aria-hidden="true">→</span></a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Three paid cards -->
+    <section class="section section--paper" style="padding-top:clamp(24px,4vw,44px)">
+      <div class="container">
+        <div class="reveal center" style="max-width:640px;margin-inline:auto">
+          <span class="eyebrow" style="justify-content:center">Paid offers</span>
+          <h2 class="h2 mt-1">Three one-time services.</h2>
+        </div>
+        <div class="offers mt-3 reveal">
+          <!-- $29 weekly case -->
           <div class="offer">
-            <div class="offer__eyebrow">Investigate one product</div>
-            <div class="offer__name">Single Product Report</div>
-            <div class="offer__price">$29</div>
-            <p class="offer__scope">A focused research report on the product you want to sell.</p>
+            <div class="offer__eyebrow">Published weekly (planned)</div>
+            <div class="offer__name">Weekly Case Report</div>
+            <div class="offer__price">$29 <small>per case</small></div>
+            <p class="offer__scope">A researched report on a product <strong>we</strong> select and publish — not personalized to you.</p>
             <ul class="offer__list">
-              <li><span class="tick">✓</span><span>Comparable products, competition and selling prices</span></li>
-              <li><span class="tick">✓</span><span>Demand signals and estimated sales where available</span></li>
-              <li><span class="tick">✓</span><span>Customer-review themes and ways to stand out</span></li>
-              <li><span class="tick">✓</span><span>Preliminary costs, margins and optional improvement ideas</span></li>
-              <li><span class="tick">✓</span><span>Supplier questions, key risks and your next step</span></li>
+              <li><span class="tick">✓</span><span>Full research on one selected product</span></li>
+              <li><span class="tick">✓</span><span>A new case planned each week</span></li>
+              <li><span class="tick">✓</span><span>Buy only the cases you want</span></li>
+              <li><span class="no"></span><span>Not your product — that's the $49 report</span></li>
             </ul>
-            <a class="btn btn--blue btn--block" href="submit.html?tier=single" data-order="single">Investigate my product</a>
-            <p class="offer__note">One product, one target market and one sales channel.</p>
+            <a class="btn btn--outline btn--block" href="reports.html" data-order="case">See the cases</a>
+            <p class="offer__note">New cases are planned weekly — none are released for purchase yet.</p>
           </div>
 
-          <!-- $49 -->
+          <!-- $49 personalized -->
           <div class="offer">
-            <div class="offer__eyebrow">Compare two opportunities</div>
-            <div class="offer__name">Two Product Reports</div>
-            <div class="offer__price">$49 <small>total</small></div>
-            <p class="offer__scope">Research two products and decide which deserves your next step.</p>
+            <div class="offer__eyebrow">Your product · full investigation</div>
+            <div class="offer__name">Personalized Product Report</div>
+            <div class="offer__price">$49</div>
+            <p class="offer__scope">The complete written investigation of one product you submit.</p>
             <ul class="offer__list">
-              <li><span class="tick">✓</span><span>Everything in the Single Product Report, for each product</span></li>
-              <li><span class="tick">✓</span><span>Two individual product reports</span></li>
-              <li><span class="tick">✓</span><span>A side-by-side comparison of costs, competition and opportunity</span></li>
-              <li><span class="tick">✓</span><span>A recommendation on which product to test first</span></li>
+              <li><span class="tick">✓</span><span>Verified visual matches &amp; same-category alternatives</span></li>
+              <li><span class="tick">✓</span><span>Observed prices &amp; qualified demand signals</span></li>
+              <li><span class="tick">✓</span><span>Review themes &amp; unmet needs</span></li>
+              <li><span class="tick">✓</span><span>Fair sell-as-sourced route <strong>plus an optional custom-design suggestion</strong></span></li>
+              <li><span class="tick">✓</span><span>Preliminary sourcing, price &amp; contribution scenarios; risks &amp; next tests</span></li>
             </ul>
-            <p class="mt-0" style="font-weight:700;color:var(--blue);font-size:.92rem;margin:2px 0 14px">Save $9 compared with two separate reports.</p>
-            <a class="btn btn--blue btn--block" href="submit.html?tier=two" data-order="two">Compare my two products</a>
-            <p class="offer__note">Two products, one shared target market and sales channel.</p>
+            <a class="btn btn--blue btn--block" href="submit.html?tier=personalized" data-order="personalized">Submit your product</a>
+            <p class="offer__note">One product, one market, one channel. No raw data exports, supplier agreement, exact competitor sales, physical sample, loan or fixed page count.</p>
           </div>
 
-          <!-- $249 -->
+          <!-- $249 consultation -->
           <div class="offer offer--highlight" id="consultation">
             <span class="offer__flag">Complete launch support</span>
-            <div class="offer__eyebrow">Personalized launch planning</div>
-            <div class="offer__name">Complete Business Launch Consultation</div>
+            <div class="offer__eyebrow">One product · in-depth + consultation</div>
+            <div class="offer__name">Personal Launch Consultation</div>
             <div class="offer__price">$249</div>
-            <span class="offer__finance">Includes business finance suggestions</span>
-            <p class="offer__scope mt-1">An in-depth product investigation and personalized consultation to plan how to source, position, price and launch your product — and explore ways to finance the start.</p>
-            <ul class="offer__list">
-              <li><span class="tick">✓</span><span>In-depth competition, demand and customer-review analysis</span></li>
-              <li><span class="tick">✓</span><span>Sell-as-sourced versus optional customization, with costs and pricing scenarios</span></li>
-              <li><span class="tick">✓</span><span>An optional design concept and supplier development brief</span></li>
-              <li><span class="tick">✓</span><span>Supplier screening and a price/small-order negotiation kit</span></li>
-              <li><span class="tick">✓</span><span>Startup budget, cash-flow planning and business finance suggestions</span></li>
-              <li><span class="tick">✓</span><span>Personalized consultation and a practical launch action plan</span></li>
+            <span class="offer__finance">Includes supplier validation &amp; business finance suggestions</span>
+            <ul class="offer__list mt-1">
+              <li><span class="tick">✓</span><span>Everything in the $49 report, deeper</span></li>
+              <li><span class="tick">✓</span><span>Agreed supplier validation — identity/listing/document checks &amp; quote-comparability review</span></li>
+              <li><span class="tick">✓</span><span>Development &amp; small-order negotiation plan</span></li>
+              <li><span class="tick">✓</span><span>Launch budget, cash-flow/downside &amp; finance options by country and stage</span></li>
+              <li><span class="tick">✓</span><span>Personal consultation and a launch action plan</span></li>
             </ul>
-            <a class="btn btn--primary btn--block" href="submit.html?tier=consultation" data-order="consultation">Start my complete consultation</a>
-            <p class="offer__note">For one selected product. Consultation format, timing and deliverables are confirmed before payment.</p>
+            <a class="btn btn--primary btn--block" href="submit.html?tier=consultation" data-order="consultation">Start a launch consultation</a>
+            <p class="offer__note">Format, timing, deliverables and any supplier-contact authority are confirmed before payment. SourceVerdict is not a lender.</p>
           </div>
         </div>
-
-        <p class="avail-note center reveal" style="max-width:640px;margin-inline:auto">Prefer to see the work first? <a href="sample-report.html" data-full-report>View the free sample</a> — a complete worked example, no signup.</p>
       </div>
     </section>
 
@@ -142,56 +152,55 @@
         <div class="reveal" style="max-width:760px">
           <span class="eyebrow eyebrow--blue">Business finance</span>
           <h2 class="h2 mt-1">Plan how to fund your first steps.</h2>
-          <p class="lead mt-1">Our $249 Complete Business Launch Consultation includes a startup budget, cash-flow planning and business finance suggestions tailored to where your business is based and how you plan to launch. We help you understand the amount you may need, compare relevant options and identify practical next steps.</p>
+          <p class="lead mt-1">The $249 Personal Launch Consultation includes a startup budget, cash-flow planning and business finance suggestions tailored to where your business is based and how you plan to launch. We help you understand the amount you may need, compare relevant options and identify practical next steps.</p>
         </div>
         <div class="grid-cards cols-3 mt-3 reveal">
           <div class="card"><h3>Startup budget</h3><p class="mt-1">Product samples, inventory, shipping, selling fees and launch costs.</p></div>
           <div class="card"><h3>Cash-flow plan</h3><p class="mt-1">When money is needed and how slower sales could affect the plan.</p></div>
           <div class="card"><h3>Finance suggestions</h3><p class="mt-1">Relevant routes to investigate, eligibility considerations and application preparation.</p></div>
         </div>
-        <p class="note mt-3 reveal">SourceVerdict provides consultation, not funding. Financing availability and approval depend on the provider and your circumstances.</p>
-        <div class="btn-row mt-3 reveal"><a class="btn btn--primary" href="submit.html?tier=consultation" data-order="consultation">Get complete launch consultation <span class="arrow" aria-hidden="true">→</span></a></div>
+        <p class="note mt-3 reveal">We provide financial consultation to help you start your business. SourceVerdict is not a lender — provider eligibility, terms and approval apply, and business location is separate from your selling marketplace.</p>
+        <div class="btn-row mt-3 reveal"><a class="btn btn--primary" href="submit.html?tier=consultation" data-order="consultation">Start a launch consultation <span class="arrow" aria-hidden="true">→</span></a></div>
       </div>
     </section>
 
-    <!-- Comparison table -->
+    <!-- Comparison -->
     <section class="section">
       <div class="container">
         <div class="reveal" style="max-width:720px">
-          <span class="eyebrow">Compare the services</span>
+          <span class="eyebrow">Compare</span>
           <h2 class="h2 mt-1">What's included at each level.</h2>
         </div>
         <div class="table-scroll mt-3 reveal">
           <table class="scope-table">
             <thead>
-              <tr><th scope="col">Included</th><th scope="col">$29</th><th scope="col">$49</th><th scope="col" class="is-featured">$249</th></tr>
+              <tr><th scope="col">Included</th><th scope="col">$29 Weekly Case</th><th scope="col">$49 Personalized</th><th scope="col" class="is-featured">$249 Consultation</th></tr>
             </thead>
             <tbody>
-              <tr><td>Submitted products covered</td><td>1</td><td>2</td><td>1</td></tr>
-              <tr><td>Competition, demand, pricing and reviews</td><td>Focused research</td><td>Focused research for each</td><td class="yes">In-depth analysis</td></tr>
-              <tr><td>Cost and margin scenarios</td><td>Preliminary</td><td>Preliminary for each</td><td class="yes">Detailed launch scenarios</td></tr>
-              <tr><td>Compare which product to test</td><td class="no">—</td><td class="yes">Included</td><td>Selected product assessed</td></tr>
-              <tr><td>Optional improvements</td><td>Ideas</td><td>Ideas for each</td><td class="yes">Concept and supplier brief</td></tr>
-              <tr><td>Supplier guidance</td><td>Key questions</td><td>Key questions for each</td><td class="yes">Screening and negotiation kit</td></tr>
-              <tr><td>Tailored startup budget and cash flow</td><td class="no">—</td><td class="no">—</td><td class="yes">Included</td></tr>
-              <tr><td>Business finance suggestions and personalized consultation</td><td class="no">—</td><td class="no">—</td><td class="yes">Included</td></tr>
-              <tr><td>Written recommended next steps</td><td class="yes">Included</td><td class="yes">Included</td><td class="yes">Launch action plan</td></tr>
+              <tr class="price-row"><td>Price (USD, pre-tax)</td><td>$29 / case</td><td>$49</td><td>$249</td></tr>
+              <tr><td>Your submitted product</td><td class="no">— (we choose)</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+              <tr><td>Personalized to you</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+              <tr><td>Competition, demand, pricing &amp; reviews</td><td>Full research</td><td class="yes">Full research</td><td class="yes">In-depth</td></tr>
+              <tr><td>As-sourced vs optional improvement</td><td>Ideas</td><td class="yes">Suggestion</td><td class="yes">Concept + supplier brief</td></tr>
+              <tr><td>Supplier guidance</td><td>Questions</td><td>Negotiation questions</td><td class="yes">Screening + negotiation plan</td></tr>
+              <tr><td>Supplier validation (identity/document checks)</td><td class="no">—</td><td class="no">—</td><td class="yes">Agreed scope</td></tr>
+              <tr><td>Launch budget, cash-flow &amp; finance options</td><td class="no">—</td><td class="no">—</td><td class="yes">Included</td></tr>
+              <tr><td>Personal consultation</td><td class="no">—</td><td class="no">—</td><td class="yes">Included</td></tr>
             </tbody>
           </table>
         </div>
-        <p class="avail-note reveal">Standard scope is one target country and one primary channel (the two-product package uses one shared market and channel). Different-market requests are confirmed before payment. Estimates are labelled; a supplier's listed MOQ alone does not decide whether to proceed.</p>
+        <p class="avail-note reveal">Standard scope is one target market and one primary channel. Different-market requests are confirmed before payment. Estimates are labelled; a supplier's listed MOQ alone does not decide whether to proceed, and negotiated quantities need actual supplier agreement.</p>
       </div>
     </section>
 
     <!-- Partner module (inactive → renders nothing) -->
     <section id="partner-module" class="section partner-module"></section>
 
-    <!-- FAQ teaser -->
     <section class="section section--tint">
       <div class="container center">
         <div class="reveal" style="max-width:600px;margin-inline:auto">
           <h2 class="h2">Questions before you submit?</h2>
-          <p class="lead mt-1">What each service includes, what to send, and how the $249 consultation and finance suggestions work.</p>
+          <p class="lead mt-1">What each service includes, what to send, and how the free sample, weekly cases and finance suggestions work.</p>
           <div class="btn-row mt-2" style="justify-content:center">
             <a class="btn btn--blue" href="faq.html">Read the FAQ</a>
             <a class="btn btn--outline" href="submit.html">Submit your product</a>
@@ -214,7 +223,7 @@
           <a href="reports.html">Sample &amp; cases</a>
           <a href="sample-report.html">Free sample</a>
           <a href="submit.html">Submit your product</a>
-          <a href="pricing.html#consultation">Complete consultation</a>
+          <a href="pricing.html#consultation">Launch consultation</a>
         </nav>
         <nav class="footer-col" aria-label="Company">
           <h4>Company</h4>
