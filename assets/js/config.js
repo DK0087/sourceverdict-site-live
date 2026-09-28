@@ -73,10 +73,10 @@ window.SV_CONFIG = {
      before reusing any link.
      --------------------------------------------------------------- */
   stripe: {
-    mode: "test",
+    mode: "live", // LIVE — real charges (owner-approved 2026-09-27)
     paymentLinks: {
-      // personalized: "https://buy.stripe.com/....",  // $49
-      // consultation: "https://buy.stripe.com/....",  // $249
+      personalized: "https://buy.stripe.com/dRm6oIblL5IDdhm9rq9sk02",  // $49 USD — LIVE
+      consultation: "https://buy.stripe.com/3cI5kE61r5ID1yEbzy9sk01",  // $249 USD — LIVE
       // "case-YYYY-WW":  "https://buy.stripe.com/...." // a released weekly case
     }
   },
@@ -94,7 +94,13 @@ window.SV_CONFIG = {
      Secrets/keys live ONLY in the deployment environment, never here.
      --------------------------------------------------------------- */
   forms: {
+    // $49/$249 intake delivery. Priority: customEndpoint (your own server) →
+    // web3formsKey (Web3Forms, https://api.web3forms.com/submit) → else email draft.
+    // web3formsKey is a PUBLIC access key (safe to embed, like a Payment Link).
+    // Get one free at https://web3forms.com (enter the inbox you want submissions
+    // sent to; the key is emailed to you). Paste it below to make the form deliver.
     customEndpoint: "",
+    web3formsKey: "072d7f44-05db-4b29-a746-14659d8332df", // public access key (safe to embed); submissions → Web3Forms account inbox
     sampleEmailEndpoint: "",
     fallbackEmail: "hello@sourceverdict.net",
     maxUploadMB: 10

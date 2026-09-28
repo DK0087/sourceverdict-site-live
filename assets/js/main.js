@@ -76,6 +76,15 @@
 
   function stripeLink(ref) { return (ref && CFG.stripe && CFG.stripe.paymentLinks && CFG.stripe.paymentLinks[ref]) || ""; }
 
+  /* Intake delivery endpoint. Priority: your own server → Web3Forms (public
+     access key) → "" (no backend → honest email-draft fallback). */
+  var WEB3_URL = "https://api.web3forms.com/submit";
+  function formEndpoint() {
+    if (CFG.forms && CFG.forms.customEndpoint) return CFG.forms.customEndpoint;
+    if (CFG.forms && CFG.forms.web3formsKey) return WEB3_URL;
+    return "";
+  }
+
   /* =====================================================================
      SAMPLE & CASES  — free sample + editorial public cases (not for sale)
      ===================================================================== */
@@ -199,8 +208,19 @@
         return;
       }
       btn.disabled = true; var label = btn.textContent; btn.textContent = "Sending…";
-      fetch(endpoint, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
-        .then(function (res) { if (!res.ok) throw new Error("bad"); form.reset(); $$(".file-name", form).forEach(function (n) { n.textContent = ""; }); status("ok", opts.successMsg(form, payLink)); window.svTrack(opts.eventPrefix + "_completed", { path: "endpoint" }); })
+      var fd = new FormData(form);
+      if (endpoint === WEB3_URL) {
+        fd.append("access_key", CFG.forms.web3formsKey);
+        fd.append("subject", opts.subject(form));
+        fd.append("from_name", "SourceVerdict submission");
+        fd.append("message", opts.summary(form)); // clean, readable email body
+      }
+      fetch(endpoint, { method: "POST", body: fd, headers: { Accept: "application/json" } })
+        .then(function (res) {
+          if (endpoint === WEB3_URL) { return res.json().then(function (j) { if (!res.ok || !j || !j.success) throw new Error((j && j.message) || "bad"); }); }
+          if (!res.ok) throw new Error("bad");
+        })
+        .then(function () { form.reset(); $$(".file-name", form).forEach(function (n) { n.textContent = ""; }); status("ok", opts.successMsg(form, payLink)); window.svTrack(opts.eventPrefix + "_completed", { path: "endpoint" }); })
         .catch(function () { status("err", "Something went wrong sending that. Please email <a href='mailto:" + (CFG.forms.fallbackEmail) + "'>" + (CFG.forms.fallbackEmail) + "</a> and we’ll take it from there."); })
         .finally(function () { btn.disabled = false; btn.textContent = label; });
     });
@@ -246,7 +266,7 @@
 
     genericLeadForm(form, {
       eventPrefix: "custom_order",
-      endpoint: function () { return CFG.forms.customEndpoint; },
+      endpoint: function () { return formEndpoint(); },
       subject: function () { return "Product investigation request — " + (currentTier() || "custom"); },
       payLink: function () { return stripeLink(currentTier()); },
       successMsg: function (f, pay) {
@@ -318,7 +338,8 @@
   function reportMissingConfig() {
     if (!window.console) return;
     var miss = [];
-    if (!CFG.forms.customEndpoint) miss.push("forms.customEndpoint → $49/$249 intake opens an email draft (not auto-sent; images not attached)");
+    if (!formEndpoint()) miss.push("intake delivery OFF → $49/$249 form opens an email draft (not auto-sent). Set forms.web3formsKey (or forms.customEndpoint) to deliver.");
+    else if (CFG.forms.web3formsKey && !CFG.forms.customEndpoint) miss.push("intake delivery = Web3Forms (submissions emailed to your Web3Forms inbox).");
     if (!CFG.forms.sampleEmailEndpoint) miss.push("forms.sampleEmailEndpoint → free-sample email delivery NOT live (needs email provider + backend + hosted gated report on the domain)");
     var links = (CFG.stripe && CFG.stripe.paymentLinks) || {};
     ["personalized", "consultation"].forEach(function (k) { if (!links[k]) miss.push("stripe.paymentLinks." + k + " → " + k + " not directly payable (scope-confirm → payment link)"); });
